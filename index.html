@@ -343,8 +343,7 @@
         }
 
         input[type="text"],
-        input[type="number"],
-        select {
+        input[type="number"] {
             width: 100%;
             padding: 12px 14px;
             border: 1.5px solid var(--border-color);
@@ -362,8 +361,7 @@
             padding-right: 36px;
         }
 
-        input:focus,
-        select:focus {
+        input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
@@ -2924,6 +2922,14 @@
         <div class="container">
 
             <div class="top-bar">
+                <div id="import-export-container" style="display: flex; gap: 8px; margin-right: auto;">
+                    <button type="button" class="toggle-pill" id="btn-import-data" onclick="importLocalStorageData()" title="Import Data">
+                        <span>📥</span> <span data-i18n="importBtn">Import</span>
+                    </button>
+                    <button type="button" class="toggle-pill" id="btn-export-data" onclick="exportLocalStorageData()" title="Export Data">
+                        <span>📤</span> <span data-i18n="exportBtn">Export</span>
+                    </button>
+                </div>
                 <button type="button" class="toggle-pill btn-danger" id="cards-reset-btn-top" onclick="resetGame()" style="display: none; margin-right: auto; width: auto;">
                     <span>◀</span> <span data-i18n="endGame">End & New Game</span>
                 </button>
@@ -3372,6 +3378,7 @@
 
         // ── UI strings ───────────────────────────────────────────────────────────────
         const STRINGS = {
+            importBtn: 'Import', exportBtn: 'Export',
             title: 'Score Keeper', selectTeams: 'Select Teams',
             team1Label: 'Team 1:', team2Label: 'Team 2:', startGame: 'Start Game',
             roundTypesTitle: '⚙️ Round Types',
@@ -4210,7 +4217,8 @@
             if (badge) { badge.style.display = 'none'; }
             const resetBtn = document.getElementById('cards-reset-btn-top');
             if (resetBtn) resetBtn.style.display = 'none';
-
+            const ieContainer = document.getElementById('import-export-container');
+            if (ieContainer) ieContainer.style.display = 'flex';
         }
 
         function loadCardsActiveGame() {
@@ -4263,6 +4271,8 @@
             if (badge) { badge.style.display = 'inline-flex'; badge.textContent = '♠️ Cards'; }
             const resetBtn = document.getElementById('cards-reset-btn-top');
             if (resetBtn) resetBtn.style.display = 'inline-flex';
+            const ieContainer = document.getElementById('import-export-container');
+            if (ieContainer) ieContainer.style.display = 'none';
             injectSidebar();
             renderRoundTypeRadios();
             loadTeamPairSideScores(team1Name, team2Name);
@@ -4639,7 +4649,8 @@
             if (badge) { badge.style.display = 'none'; }
             const resetBtn = document.getElementById('domino-reset-btn-top');
             if (resetBtn) resetBtn.style.display = 'none';
-
+            const ieContainer = document.getElementById('import-export-container');
+            if (ieContainer) ieContainer.style.display = 'flex';
         }
 
         function loadDominoActiveGame() {
@@ -4784,6 +4795,8 @@
             document.getElementById('domino-team-management').style.display = 'none';
             const resetBtn = document.getElementById('domino-reset-btn-top');
             if (resetBtn) resetBtn.style.display = 'inline-flex';
+            const ieContainer = document.getElementById('import-export-container');
+            if (ieContainer) ieContainer.style.display = 'none';
             injectDominoSidebar();
             loadDominoTeamPairSideScores(dominoTeam1Name, dominoTeam2Name);
             renderDominoTable();
@@ -5435,6 +5448,71 @@
             });
             a.click(); URL.revokeObjectURL(a.href);
             showToast(`${t('exportedAs')} JSON`, 'success');
+        }
+
+        // ── Full LocalStorage Data Backup & Restore ──────────────────────────────────
+        function exportLocalStorageData() {
+            const data = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('cardGame_')) {
+                    data[key] = localStorage.getItem(key);
+                }
+            }
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = Object.assign(document.createElement('a'), {
+                href: URL.createObjectURL(blob),
+                download: `score_keeper_backup_${new Date().toISOString().slice(0, 10)}.json`
+            });
+            a.click();
+            URL.revokeObjectURL(a.href);
+            showToast('Backup exported successfully!', 'success');
+            haptic(15);
+        }
+
+        function importLocalStorageData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function (event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        const keys = Object.keys(data);
+                        if (keys.length === 0 || !keys.every(k => k.startsWith('cardGame_'))) {
+                            showToast('Invalid backup file format.', 'error');
+                            return;
+                        }
+                        if (!confirm('This will restore your settings, saved teams, and match history. Any current configurations will be overwritten. Proceed?')) return;
+                        
+                        // Clear existing cardGame_ keys first
+                        for (let i = localStorage.length - 1; i >= 0; i--) {
+                            const key = localStorage.key(i);
+                            if (key && key.startsWith('cardGame_')) {
+                                localStorage.removeItem(key);
+                            }
+                        }
+                        
+                        // Store the imported values
+                        keys.forEach(k => {
+                            localStorage.setItem(k, data[k]);
+                        });
+                        
+                        showToast('Backup restored! Reloading page...', 'success');
+                        haptic([30, 50, 30]);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1200);
+                    } catch (err) {
+                        showToast('Failed to parse backup file.', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
         }
 
         // ── Init ──────────────────────────────────────────────────────────────────────
