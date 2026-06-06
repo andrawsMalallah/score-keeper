@@ -20,20 +20,20 @@
                 <div id="import-export-container" style="display: flex; gap: 8px; margin-right: auto;">
                     <button type="button" class="toggle-pill" id="btn-import-data" onclick="importLocalStorageData()"
                         title="Import Data">
-                        <span>📥</span> <span data-i18n="importBtn">Import</span>
+                        <span>📥</span> <span>Import</span>
                     </button>
                     <button type="button" class="toggle-pill" id="btn-export-data" onclick="exportLocalStorageData()"
                         title="Export Data">
-                        <span>📤</span> <span data-i18n="exportBtn">Export</span>
+                        <span>📤</span> <span>Export</span>
                     </button>
                 </div>
                 <button type="button" class="toggle-pill btn-danger" id="cards-reset-btn-top" onclick="resetGame()"
                     style="display: none; margin-right: auto; width: auto;">
-                    <span>◀</span> <span data-i18n="endGame">End &amp; New Game</span>
+                    <span>◀</span> <span>End &amp; New Game</span>
                 </button>
                 <button type="button" class="toggle-pill btn-danger" id="domino-reset-btn-top"
                     onclick="resetDominoGame()" style="display: none; margin-right: auto; width: auto;">
-                    <span>◀</span> <span data-i18n="endGame">End &amp; New Game</span>
+                    <span>◀</span> <span>End &amp; New Game</span>
                 </button>
                 <button type="button" class="toggle-pill" id="theme-toggle" onclick="toggleTheme()">
                     <span class="pill-icon" id="theme-icon">🌙</span>
@@ -41,7 +41,7 @@
                 </button>
             </div>
 
-            <h1><span data-i18n="title" class="title-text">Score Keeper</span> <span id="game-title-badge"
+            <h1><span class="title-text">Score Keeper</span> <span id="game-title-badge"
                     class="game-title-badge">♠️ Cards</span></h1>
 
             <!-- Game Tabs -->
@@ -56,7 +56,7 @@
                 <!-- Cards Setup Section -->
                 <div id="cards-setup-section">
                     <div class="team-selection-card">
-                        <h2 data-i18n="selectTeams">Select Teams</h2>
+                        <h2>Select Teams</h2>
                         <div class="team-slots-container">
                             <div class="team-slot-card" id="cards-slot-t1" onclick="focusCardsSlot(1)">
                                 <div class="team-slot-placeholder">
@@ -76,11 +76,11 @@
                         <input type="hidden" id="cards-team2-select" value=""
                             onchange="handleCardsTeamSelectionChange()">
                         <div class="sub-rollover-setup">
-                            <label data-i18n="subRolloverPerMain">Sub scores per main</label>
-                            <p class="sub-rollover-hint" data-i18n="subRolloverHint">When a team's sub score reaches
+                            <label>Sub scores per main</label>
+                            <p class="sub-rollover-hint">When a team's sub score reaches
                                 this count, it resets and they earn +1 main.</p>
                             <div class="counter-row">
-                                <span class="counter-label" data-i18n="subRolloverAt">Rollover at</span>
+                                <span class="counter-label">Rollover at</span>
                                 <div class="counter-controls">
                                     <button type="button" class="btn-counter" onclick="changeCardsSubRollover(-1)"
                                         title="Decrease">−</button>
@@ -92,73 +92,69 @@
                         </div>
                         <button type="button" class="start-game-btn" onclick="startCardsGame()">
                             <span>▶</span>
-                            <span data-i18n="startGame">Start Game</span>
+                            <span>Start Game</span>
                         </button>
                     </div>
 
                     <!-- Team Management inside Cards setup -->
                     <div class="manage-teams-box team-selection-card" id="cards-team-management">
-                        <div class="manage-title" data-i18n="manageTeams">Team Management</div>
+                        <div class="manage-title">Team Management</div>
                         <div class="form-group">
-                            <label for="new-team-name" data-i18n="newTeamLabel">New Team Name:</label>
+                            <label for="new-team-name">New Team Name:</label>
                             <div class="add-team-row">
-                                <input type="text" id="new-team-name" data-i18n-placeholder="newTeamPlaceholder"
+                                <input type="text" id="new-team-name"
                                     placeholder="Enter team name..."
                                     onkeydown="if(event.key==='Enter') handleAddNewTeam()">
                                 <button class="add-team-btn" onclick="handleAddNewTeam()">
                                     <span>＋</span>
-                                    <span data-i18n="addBtn">Add</span>
+                                    <span>Add</span>
                                 </button>
                             </div>
                         </div>
-                        <label for="saved-teams" data-i18n="savedTeams">Saved Teams</label>
+                        <label for="saved-teams">Saved Teams</label>
 
                         <div id="team-manager-list" class="team-manager-list"></div>
                     </div>
 
                     <div class="round-types-card">
-                        <h2 data-i18n="roundTypesTitle">⚙️ Round Types</h2>
+                        <h2>⚙️ Round Types</h2>
                         <div id="rt-list" class="rt-list"></div>
                         <div class="rt-add-grid">
                             <div class="rt-add-row">
                                 <div class="rt-field">
-                                    <label data-i18n="rtNameLabel">Name</label>
-                                    <input type="text" id="rt-name-input" data-i18n-placeholder="rtNamePlaceholder"
+                                    <label>Name</label>
+                                    <input type="text" id="rt-name-input"
                                         placeholder="e.g. Triple">
                                 </div>
                             </div>
                             <div class="rt-add-row">
                                 <div class="rt-field">
-                                    <label data-i18n="rtWinnerPtsLabel">Winner Points</label>
-                                    <input type="number" id="rt-winner-pts-input"
-                                        data-i18n-placeholder="rtWinnerPtsPlaceholder" placeholder="e.g. -25" max="-1">
+                                    <label>Winner Points</label>
+                                    <input type="number" id="rt-winner-pts-input" placeholder="e.g. -25" max="-1">
                                 </div>
                                 <div class="rt-field">
-                                    <label data-i18n="rtLoserPtsLabel">Loser Points <span
-                                            style="font-weight:400;color:var(--text-muted);"
-                                            data-i18n="optional">(optional)</span></label>
-                                    <input type="number" id="rt-loser-pts-input"
-                                        data-i18n-placeholder="rtLoserPtsPlaceholder" placeholder="e.g. 200" min="2">
-                                    <span class="rt-optional-hint" data-i18n="rtLoserPtsHint">If set, min. 2 — will
+                                    <label>Loser Points <span
+                                            style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+                                    <input type="number" id="rt-loser-pts-input" placeholder="e.g. 200" min="2">
+                                    <span class="rt-optional-hint">If set, min. 2 — will
                                         auto-fill in game</span>
                                 </div>
                             </div>
                             <button class="add-rt-btn" onclick="addRoundType()">
                                 <span>＋</span>
-                                <span data-i18n="addRoundTypeBtn">Add Round Type</span>
+                                <span>Add Round Type</span>
                             </button>
                         </div>
                     </div>
 
                     <div class="match-history-card" id="match-history-card" style="display:none;">
                         <div class="leaderboard-header">
-                            <h2 style="font-size:18px;">📜 <span data-i18n="matchHistory">Match History</span></h2>
+                            <h2 style="font-size:18px;">📜 <span>Match History</span></h2>
                             <div style="display:flex;gap:8px;">
                                 <button class="btn-show-all" id="history-toggle-btn" onclick="toggleMatchHistory()">
-                                    <span data-i18n="showAll">Show All</span>
+                                    <span>Show All</span>
                                 </button>
-                                <button class="btn-show-all" onclick="clearMatchHistory()"
-                                    data-i18n="clearHistory">Clear</button>
+                                <button class="btn-show-all" onclick="clearMatchHistory()">Clear</button>
                             </div>
                         </div>
                         <div id="match-history-list"></div>
@@ -166,9 +162,9 @@
 
                     <div class="leaderboard-setup-card">
                         <div class="leaderboard-header">
-                            <h2 style="font-size:18px;">🏆 <span data-i18n="leaderboard">Leaderboard</span></h2>
+                            <h2 style="font-size:18px;">🏆 <span>Leaderboard</span></h2>
                             <button class="btn-show-all" id="leaderboard-toggle-btn" onclick="toggleLeaderboardAll()">
-                                <span data-i18n="showAll">Show All</span>
+                                <span>Show All</span>
                             </button>
                         </div>
                         <div class="leaderboard-table-wrap">
@@ -176,10 +172,10 @@
                                 <thead>
                                     <tr>
                                         <th class="lb-rank">#</th>
-                                        <th class="lb-team" data-i18n="teamName">Team</th>
-                                        <th class="lb-main" data-i18n="mainCol">Main</th>
-                                        <th class="lb-sub" data-i18n="subCol">Sub</th>
-                                        <th class="lb-rnds" data-i18n="rndsCol">Rnds</th>
+                                        <th class="lb-team">Team</th>
+                                        <th class="lb-main">Main</th>
+                                        <th class="lb-sub">Sub</th>
+                                        <th class="lb-rnds">Rnds</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -196,7 +192,7 @@
 
                     <div class="controls-card">
                         <div class="form-group">
-                            <label data-i18n="whoWon">Who won this round?</label>
+                            <label>Who won this round?</label>
                             <div class="winner-buttons">
                                 <button class="winner-btn" id="btn-winner-t1" onclick="setWinner(1)">Team 1</button>
                                 <button class="winner-btn" id="btn-winner-t2" onclick="setWinner(2)">Team 2</button>
@@ -206,33 +202,32 @@
 
                         <div class="form-group">
                             <label>
-                                <span data-i18n="roundType">Round Type</span>
+                                <span>Round Type</span>
                             </label>
                             <div class="radio-group" id="round-type-radios"></div>
                         </div>
 
                         <div class="form-group">
-                            <label for="loser-points" data-i18n="loserPoints">Loser's Hand Points:</label>
+                            <label for="loser-points">Loser's Hand Points:</label>
                             <input type="number" id="loser-points" placeholder="Min. 2 pts" min="2"
                                 onkeydown="if(event.key==='Enter') addRound()">
                         </div>
 
                         <div class="form-group">
-                            <label for="round-note" data-i18n="roundNote">Note (optional):</label>
-                            <input type="text" id="round-note" class="round-note-input"
-                                data-i18n-placeholder="roundNotePlaceholder" placeholder="e.g. Triple bid failed"
+                            <label for="round-note">Note (optional):</label>
+                            <input type="text" id="round-note" class="round-note-input" placeholder="e.g. Triple bid failed"
                                 onkeydown="if(event.key==='Enter') addRound()">
                         </div>
 
                         <button onclick="addRound()">
-                            <span data-i18n="addRound">Add Round</span>
+                            <span>Add Round</span>
                         </button>
                     </div>
 
                     <table id="score-table">
                         <thead>
                             <tr>
-                                <th style="width:12%;min-width:45px;" data-i18n="roundCol">Rnd</th>
+                                <th style="width:12%;min-width:45px;">Rnd</th>
                                 <th id="th-team1" style="width:37%;">Team 1</th>
                                 <th id="th-team2" style="width:37%;">Team 2</th>
                                 <th style="width:14%;min-width:70px;">Actions</th>
@@ -241,13 +236,13 @@
                         <tbody></tbody>
                         <tfoot>
                             <tr class="total-row">
-                                <th data-i18n="totalRow">Total</th>
+                                <th>Total</th>
                                 <td id="t1-total">0</td>
                                 <td id="t2-total">0</td>
                                 <td></td>
                             </tr>
                             <tr class="difference-row">
-                                <th data-i18n="advantageRow">Advantage</th>
+                                <th>Advantage</th>
                                 <td id="combined-diff-cell" colspan="2" class="status-tie">-</td>
                                 <td class="status-tie"></td>
                             </tr>
@@ -256,7 +251,7 @@
 
                     <div class="action-footer-group">
                         <button id="declare-winner-btn" class="btn-success" onclick="declareWinner()" disabled>
-                            <span data-i18n="declareWinner">Declare a Winner</span>
+                            <span>Declare a Winner</span>
                         </button>
                     </div>
                 </div>
@@ -287,11 +282,11 @@
                         <input type="hidden" id="domino-team2-select" value=""
                             onchange="handleDominoTeamSelectionChange()">
                         <div class="sub-rollover-setup">
-                            <label data-i18n="subRolloverPerMain">Sub scores per main</label>
-                            <p class="sub-rollover-hint" data-i18n="subRolloverHint">When a team's sub score reaches
+                            <label>Sub scores per main</label>
+                            <p class="sub-rollover-hint">When a team's sub score reaches
                                 this count, it resets and they earn +1 main.</p>
                             <div class="counter-row">
-                                <span class="counter-label" data-i18n="subRolloverAt">Rollover at</span>
+                                <span class="counter-label">Rollover at</span>
                                 <div class="counter-controls">
                                     <button type="button" class="btn-counter" onclick="changeDominoSubRollover(-1)"
                                         title="Decrease">−</button>
@@ -302,8 +297,8 @@
                             </div>
                         </div>
                         <div class="form-group domino-target-setup">
-                            <label data-i18n="dominoTargetLabel">🎯 Target Points to Win</label>
-                            <p class="sub-rollover-hint" data-i18n="dominoTargetHint">First team to reach this total can
+                            <label>🎯 Target Points to Win</label>
+                            <p class="sub-rollover-hint">First team to reach this total can
                                 declare the winner.</p>
 
                             <div class="target-presets-row">
@@ -325,26 +320,26 @@
                         </div>
                         <button type="button" class="start-game-btn" onclick="startDominoGame()">
                             <span>▶</span>
-                            <span data-i18n="startGame">Start Game</span>
+                            <span>Start Game</span>
                         </button>
                     </div>
 
                     <!-- Team Management inside Domino setup -->
                     <div class="manage-teams-box team-selection-card" id="domino-team-management">
-                        <div class="manage-title" data-i18n="manageTeams">Team Management</div>
+                        <div class="manage-title">Team Management</div>
                         <div class="form-group">
-                            <label for="domino-new-team-name" data-i18n="newTeamLabel">New Team Name:</label>
+                            <label for="domino-new-team-name">New Team Name:</label>
                             <div class="add-team-row">
-                                <input type="text" id="domino-new-team-name" data-i18n-placeholder="newTeamPlaceholder"
+                                <input type="text" id="domino-new-team-name"
                                     placeholder="Enter team name..."
                                     onkeydown="if(event.key==='Enter') handleAddNewTeamDomino()">
                                 <button class="add-team-btn" onclick="handleAddNewTeamDomino()">
                                     <span>＋</span>
-                                    <span data-i18n="addBtn">Add</span>
+                                    <span>Add</span>
                                 </button>
                             </div>
                         </div>
-                        <label for="saved-teams" data-i18n="savedTeams">Saved Teams</label>
+                        <label for="saved-teams">Saved Teams</label>
                         <div id="domino-team-manager-list" class="team-manager-list"></div>
                     </div>
 
@@ -375,10 +370,10 @@
                                 <thead>
                                     <tr>
                                         <th class="lb-rank">#</th>
-                                        <th class="lb-team" data-i18n="teamName">Team</th>
-                                        <th class="lb-main" data-i18n="mainCol">Main</th>
-                                        <th class="lb-sub" data-i18n="subCol">Sub</th>
-                                        <th class="lb-rnds" data-i18n="rndsCol">Rnds</th>
+                                        <th class="lb-team">Team</th>
+                                        <th class="lb-main">Main</th>
+                                        <th class="lb-sub">Sub</th>
+                                        <th class="lb-rnds">Rnds</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -451,7 +446,7 @@
                     <div class="action-footer-group">
                         <button id="domino-declare-winner-btn" class="btn-success" onclick="declareDominoWinner()"
                             disabled>
-                            <span data-i18n="declareWinner">Declare a Winner</span>
+                            <span>Declare a Winner</span>
                         </button>
                     </div>
                 </div>

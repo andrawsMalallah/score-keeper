@@ -27,74 +27,12 @@ let dominoEditingRound = null;
 let cardsSubRollover = 10;
 let dominoSubRollover = 10;
 
-// ── UI strings ───────────────────────────────────────────────────────────────
-const STRINGS = {
-    importBtn: 'Import', exportBtn: 'Export',
-    title: 'Score Keeper', selectTeams: 'Select Teams',
-    startGame: 'Start Game',
-    roundTypesTitle: '⚙️ Round Types',
-    rtNameLabel: 'Name',
-    rtWinnerPtsLabel: 'Winner Points', rtLoserPtsLabel: 'Loser Points',
-    optional: '(optional)', rtLoserPtsHint: 'If set, min. 2 — auto-fills in game',
-
-    addRoundTypeBtn: 'Add Round Type', addBtn: 'Add',
-    manageTeams: 'Team Management', savedTeams: 'Saved Teams', newTeamLabel: 'New Team Name:',
-    leaderboard: 'Leaderboard', showAll: 'Show All', showTop1: 'Show Top 1', showTop3: 'Show Top 3',
-    teamName: 'Team', mainCol: 'Main', subCol: 'Sub', rndsCol: 'Rnds',
-    whoWon: 'Who won this round?', roundType: 'Round Type',
-    loserPoints: "Loser's Hand Points:", addRound: 'Add Round',
-    roundCol: 'Round', totalRow: 'Total',
-    advantageRow: 'Advantage', declareWinner: 'Declare a Winner', endGame: 'End & New Game',
-
-    setDefault: 'Default',
-    noTeams: 'No teams saved', noLeaderboard: 'No leaderboard data available',
-    tiedGame: "It's tied! Play another round.",
-    roundAdded: 'Round added!',
-    countersReset: 'Match counters reset.',
-    teamAdded: 'Team added!', teamExists: 'A team with this name already exists.',
-    enterName: 'Please enter a name.', selectBoth: 'Please select both teams.',
-    differentTeams: 'Please choose different teams.',
-    enterLoserPts: "Please enter the loser's hand points.",
-    ptsMin2: 'Points must be at least 2.',
-    rtNameRequired: 'Please enter a name.', rtWinnerRequired: 'Please enter a negative winner points value (e.g. -25).',
-    rtLoserMin2: 'Loser points must be at least 2 if set.', rtExists: 'A round type with this name already exists.',
-    rtAdded: 'Round type added!', rtDeleted: 'Round type deleted.',
-
-    subRolloverToast: 'Sub score hit {n} → +1 main!',
-    subRolloverPerMain: 'Sub scores per main',
-    subRolloverHint: "When a team's sub score reaches this count, it resets and they earn +1 main.",
-    subRolloverAt: 'Rollover at',
-    endGameConfirm: 'End this game? Main table records will be deleted.',
-    removeTeamConfirm: 'Remove this team? All tracking history will be deleted.',
-    resetCountersConfirm: 'Reset counters to 0 for this match?',
-    scoresTied: 'Scores are tied',
-    fixedLoserPts: 'Fixed loser points',
-    dark: 'Dark', light: 'Light',
-    winnerPtsLabel: 'W:', loserPtsLabel: 'L:',
-    leadsBy: 'leads by',
-    roundNote: 'Note (optional):',
-    matchHistory: 'Match History', clearHistory: 'Clear',
-    by: 'by', rounds: 'rounds',
-
-    dominoTargetLabel: 'Points to win',
-    dominoTargetHint: 'First team to reach this total can declare the winner.',
-    dominoTargetInvalid: 'Enter a valid target between 1 and 9999.',
-    dominoTargetReached: 'Target reached! Declare winner?',
-    dominoEndConfirm: 'End this Domino game?',
-    dominoEnterLoserHand: 'Please enter the loser hand points.',
-    dominoInvalidPoints: 'Points must be 0 or more.',
-};
-
-function t(key) { return STRINGS[key] || key; }
-
-function applyTranslations() {
-    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.dataset.i18nPlaceholder); });
-    document.querySelectorAll('[data-i18n-tip]').forEach(el => { el.dataset.tip = t(el.dataset.i18nTip); });
+// ── UI Initialization ────────────────────────────────────────────────────────
+function initializeUI() {
     const lbBtn = document.getElementById('leaderboard-toggle-btn');
-    if (lbBtn) { const span = lbBtn.querySelector('[data-i18n]'); if (span) span.textContent = showAllLeaderboard ? t('showTop1') : t('showAll'); }
+    if (lbBtn) { const span = lbBtn.querySelector('span'); if (span) span.textContent = showAllLeaderboard ? 'Show Top 1' : 'Show All'; }
     const dlbBtn = document.getElementById('domino-leaderboard-toggle-btn');
-    if (dlbBtn) { const span = dlbBtn.querySelector('span'); if (span) span.textContent = dominoShowAllLeaderboard ? t('showTop1') : t('showAll'); }
+    if (dlbBtn) { const span = dlbBtn.querySelector('span'); if (span) span.textContent = dominoShowAllLeaderboard ? 'Show Top 1' : 'Show All'; }
     updateTeamsUI();
     renderRoundTypes();
     renderRoundTypeRadios();
@@ -108,6 +46,7 @@ function applyTranslations() {
     renderCardsSubRolloverSetup();
     renderDominoSubRolloverSetup();
 }
+
 
 // ── Tab Switching ────────────────────────────────────────────────────────────
 function switchTab(tab) {
@@ -131,7 +70,7 @@ function applyTheme(theme) {
     const isDark = theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
     document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
-    document.getElementById('theme-label').textContent = isDark ? t('light') : t('dark');
+    document.getElementById('theme-label').textContent = isDark ? 'Light' : 'Dark';
 }
 function toggleTheme() {
     const cur = document.documentElement.getAttribute('data-theme');
@@ -208,21 +147,21 @@ function renderRoundTypes() {
     if (!list) return;
     list.innerHTML = '';
     if (roundTypes.length === 0) {
-        list.innerHTML = `<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:8px;">${t('noTeams')}</div>`;
+        list.innerHTML = `<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:8px;">No teams saved</div>`;
         return;
     }
     roundTypes.forEach((rt, i) => {
         const div = document.createElement('div');
         div.className = 'rt-item';
         const loserBadge = rt.loserPts !== null && rt.loserPts !== undefined
-            ? `<span class="rt-badge loser">${t('loserPtsLabel')} ${rt.loserPts}</span>` : '';
+            ? `<span class="rt-badge loser">L: ${rt.loserPts}</span>` : '';
         const defaultEl = i === defaultRoundTypeIndex
-            ? `<span class="rt-default-badge">${t('setDefault')}</span>`
-            : `<button class="rt-btn set-default" onclick="setDefaultRoundType(${i})">${t('setDefault')}</button>`;
+            ? `<span class="rt-default-badge">Default</span>`
+            : `<button class="rt-btn set-default" onclick="setDefaultRoundType(${i})">Default</button>`;
         div.innerHTML = `
             <span class="rt-item-label">${getRTName(rt)}</span>
             <div class="rt-badges">
-                <span class="rt-badge winner">${t('winnerPtsLabel')} ${rt.winnerPts}</span>
+                <span class="rt-badge winner">W: ${rt.winnerPts}</span>
                 ${loserBadge}
                 ${defaultEl}
             </div>
@@ -244,16 +183,16 @@ function addRoundType() {
     const loserRaw = losEl.value.trim();
     const loserPts = loserRaw === '' ? null : parseInt(loserRaw, 10);
 
-    if (!name) { showToast(t('rtNameRequired'), 'error'); return; }
-    if (isNaN(winnerPts) || winnerPts >= 0) { showToast(t('rtWinnerRequired'), 'error'); return; }
-    if (loserPts !== null && (isNaN(loserPts) || loserPts < 2)) { showToast(t('rtLoserMin2'), 'error'); return; }
-    if (roundTypes.some(r => r.name.toLowerCase() === name.toLowerCase())) { showToast(t('rtExists'), 'error'); return; }
+    if (!name) { showToast('Please enter a name.', 'error'); return; }
+    if (isNaN(winnerPts) || winnerPts >= 0) { showToast('Please enter a negative winner points value (e.g. -25).', 'error'); return; }
+    if (loserPts !== null && (isNaN(loserPts) || loserPts < 2)) { showToast('Loser points must be at least 2 if set.', 'error'); return; }
+    if (roundTypes.some(r => r.name.toLowerCase() === name.toLowerCase())) { showToast('A round type with this name already exists.', 'error'); return; }
 
     roundTypes.push({ name, winnerPts, loserPts });
     saveRoundTypes();
     nameEl.value = ''; winEl.value = ''; losEl.value = '';
     renderRoundTypes(); renderRoundTypeRadios();
-    showToast(t('rtAdded'), 'success');
+    showToast('Round type added!', 'success');
 }
 
 function deleteRoundType(index) {
@@ -261,7 +200,7 @@ function deleteRoundType(index) {
     roundTypes.splice(index, 1);
     if (defaultRoundTypeIndex >= roundTypes.length) defaultRoundTypeIndex = 0;
     saveRoundTypes(); renderRoundTypes(); renderRoundTypeRadios();
-    showToast(t('rtDeleted'), 'info');
+    showToast('Round type deleted.', 'info');
 }
 
 function setDefaultRoundType(index) {
@@ -299,7 +238,7 @@ function updateLoserInputForCurrentRoundType(idx) {
     if (rt.loserPts !== null && rt.loserPts !== undefined) {
         loserInput.value = rt.loserPts;
         loserInput.disabled = true;
-        loserInput.placeholder = `${t('fixedLoserPts')}: ${rt.loserPts}`;
+        loserInput.placeholder = `Fixed loser points: ${rt.loserPts}`;
     } else {
         loserInput.value = '';
         loserInput.disabled = false;
@@ -462,7 +401,7 @@ function renderTeamManagerList(container, teamList, gameType) {
         container.innerHTML = `
                     <div class="tm-empty-state" style="grid-column: 1 / -1; width: 100%;">
                         <div class="empty-icon">👥</div>
-                        <div class="empty-title">${t('noTeams')}</div>
+                        <div class="empty-title">No teams saved</div>
                         <div class="empty-subtitle">Add teams above to get started</div>
                     </div>
                 `;
@@ -521,7 +460,7 @@ function handleCardsTeamSelectionChange() {
     const v1 = document.getElementById('cards-team1-select').value;
     const v2 = document.getElementById('cards-team2-select').value;
     if (v1 && v1 === v2) {
-        showToast(t('differentTeams'), 'error');
+        showToast('Please choose different teams.', 'error');
         document.getElementById('cards-team2-select').value = '';
     }
     updateSlotsUI('cards');
@@ -531,7 +470,7 @@ function handleDominoTeamSelectionChange() {
     const v1 = document.getElementById('domino-team1-select').value;
     const v2 = document.getElementById('domino-team2-select').value;
     if (v1 && v1 === v2) {
-        showToast(t('differentTeams'), 'error');
+        showToast('Please choose different teams.', 'error');
         document.getElementById('domino-team2-select').value = '';
     }
     updateSlotsUI('domino');
@@ -540,21 +479,21 @@ function handleDominoTeamSelectionChange() {
 function handleAddNewTeam() {
     const el = document.getElementById('new-team-name');
     const name = el.value.trim();
-    if (!name) { showToast(t('enterName'), 'error'); return; }
-    if (cardsSavedTeams.some(t2 => t2.toLowerCase() === name.toLowerCase())) { showToast(t('teamExists'), 'error'); return; }
+    if (!name) { showToast('Please enter a name.', 'error'); return; }
+    if (cardsSavedTeams.some(t2 => t2.toLowerCase() === name.toLowerCase())) { showToast('A team with this name already exists.', 'error'); return; }
     cardsSavedTeams.push(name); localStorage.setItem('cardGame_cardsSavedTeams', JSON.stringify(cardsSavedTeams));
     el.value = ''; updateTeamsUI(); calculateAndRenderLeaderboard();
-    showToast(`"${name}" — ${t('teamAdded')}`, 'success');
+    showToast(`"${name}" — Team added!`, 'success');
 }
 
 function handleAddNewTeamDomino() {
     const el = document.getElementById('domino-new-team-name');
     const name = el.value.trim();
-    if (!name) { showToast(t('enterName'), 'error'); return; }
-    if (dominoSavedTeams.some(t2 => t2.toLowerCase() === name.toLowerCase())) { showToast(t('teamExists'), 'error'); return; }
+    if (!name) { showToast('Please enter a name.', 'error'); return; }
+    if (dominoSavedTeams.some(t2 => t2.toLowerCase() === name.toLowerCase())) { showToast('A team with this name already exists.', 'error'); return; }
     dominoSavedTeams.push(name); localStorage.setItem('cardGame_dominoSavedTeams', JSON.stringify(dominoSavedTeams));
     el.value = ''; updateTeamsUI(); calculateAndRenderDominoLeaderboard();
-    showToast(`"${name}" — ${t('teamAdded')}`, 'success');
+    showToast(`"${name}" — Team added!`, 'success');
 }
 
 function startEditTeamName(index, gameType) {
@@ -582,7 +521,7 @@ function saveEditTeamName(index, gameType) {
     if (!newName || newName === oldName) { cancelEditTeamName(index, gameType); return; }
     const teamList = gameType === 'cards' ? cardsSavedTeams : dominoSavedTeams;
     if (teamList.some((t, i) => i !== index && t.toLowerCase() === newName.toLowerCase())) {
-        showToast(t('teamExists'), 'error');
+        showToast('A team with this name already exists.', 'error');
         cancelEditTeamName(index, gameType);
         return;
     }
@@ -722,7 +661,7 @@ function saveEditTeamName(index, gameType) {
 function removeSavedTeam(index, gameType) {
     const teamList = gameType === 'cards' ? cardsSavedTeams : dominoSavedTeams;
     const rem = teamList[index];
-    if (!confirm(t('removeTeamConfirm'))) return;
+    if (!confirm('Remove this team? All tracking history will be deleted.')) return;
     teamList.splice(index, 1);
     localStorage.setItem(`cardGame_${gameType}SavedTeams`, JSON.stringify(teamList));
 
@@ -814,8 +753,8 @@ function renderMatchHistory() {
     list.innerHTML = '';
     const display = showAllHistory ? matchHistory : matchHistory.slice(0, 3);
     if (toggleBtn) {
-        const span = toggleBtn.querySelector('[data-i18n]');
-        if (span) span.textContent = showAllHistory ? t('showTop3') : t('showAll');
+        const span = toggleBtn.querySelector('span');
+        if (span) span.textContent = showAllHistory ? 'Show Top 3' : 'Show All';
     }
     display.forEach(m => {
         const date = new Date(m.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -829,7 +768,7 @@ function renderMatchHistory() {
             </div>
             <div class="history-detail">
                 <span class="history-scores">${m.team1} ${m.t1Total} — ${m.t2Total} ${m.team2}</span>
-                <span style="color:var(--text-muted);"> · ${t('by')} ${margin} · ${m.roundCount} ${t('rounds')}</span>
+                <span style="color:var(--text-muted);"> · by ${margin} · ${m.roundCount} rounds</span>
             </div>
         `;
         list.appendChild(div);
@@ -891,8 +830,8 @@ function saveCardsGameState() {
 function startCardsGame() {
     const t1 = document.getElementById('cards-team1-select').value;
     const t2 = document.getElementById('cards-team2-select').value;
-    if (!t1 || !t2) { showToast(t('selectBoth'), 'error'); return; }
-    if (t1 === t2) { showToast(t('differentTeams'), 'error'); return; }
+    if (!t1 || !t2) { showToast('Please select both teams.', 'error'); return; }
+    if (t1 === t2) { showToast('Please choose different teams.', 'error'); return; }
     team1Name = t1; team2Name = t2; rounds = [];
     saveCardsGameState(); setupCardsGameView();
 }
@@ -953,10 +892,10 @@ function decrementRoundWinMetric(name) { if (globalRoundsWonRegistry[name] > 0) 
 
 function addRound() {
     const winner = document.getElementById('winner-select-hidden').value;
-    if (!winner) { showToast(t('whoWon'), 'error'); return; }
+    if (!winner) { showToast('Who won this round?', 'error'); return; }
     const loserEl = document.getElementById('loser-points');
     const checkedRadio = document.querySelector('input[name="rt-selector"]:checked');
-    if (!checkedRadio) { showToast(t('rtNameRequired'), 'error'); return; }
+    if (!checkedRadio) { showToast('Please enter a name.', 'error'); return; }
     const rtIdx = parseInt(checkedRadio.value, 10);
     const rt = roundTypes[rtIdx];
     const winnerPts = rt.winnerPts;
@@ -966,9 +905,9 @@ function addRound() {
         loserPts = rt.loserPts;
     } else {
         const raw = loserEl.value;
-        if (raw === '') { showToast(t('enterLoserPts'), 'error'); return; }
+        if (raw === '') { showToast('Please enter the loser\'s hand points.', 'error'); return; }
         loserPts = parseInt(raw, 10);
-        if (isNaN(loserPts) || loserPts < 2) { showToast(t('ptsMin2'), 'error'); return; }
+        if (isNaN(loserPts) || loserPts < 2) { showToast('Points must be at least 2.', 'error'); return; }
     }
 
     const note = document.getElementById('round-note').value.trim();
@@ -985,7 +924,7 @@ function addRound() {
     document.getElementById('round-note').value = '';
 
     renderTable(true);
-    showToast(`${t('roundAdded')} ${rounds.length}`, 'success');
+    showToast(`Round added! ${rounds.length}`, 'success');
     haptic(20);
 }
 
@@ -1053,13 +992,13 @@ function renderTable(flashLast = false) {
     const diff = Math.abs(t1Total - t2Total);
     if (t1Total < t2Total) {
         diffCell.className = 'status-advantage';
-        diffCell.innerText = `${team1Name} ${t('leadsBy')} ${diff}`;
+        diffCell.innerText = `${team1Name} leads by ${diff}`;
     } else if (t2Total < t1Total) {
         diffCell.className = 'status-advantage';
-        diffCell.innerText = `${team2Name} ${t('leadsBy')} ${diff}`;
+        diffCell.innerText = `${team2Name} leads by ${diff}`;
     } else {
         diffCell.className = 'status-tie';
-        diffCell.innerText = t('scoresTied');
+        diffCell.innerText = 'Scores are tied';
     }
     document.getElementById('declare-winner-btn').disabled = false;
 }
@@ -1184,7 +1123,7 @@ function closeVictoryModal() {
 function declareWinner() {
     if (!rounds.length) return;
     let t1T = 0, t2T = 0; rounds.forEach(r => { t1T += r.t1; t2T += r.t2; });
-    if (t1T === t2T) { showToast(t('tiedGame'), 'error'); return; }
+    if (t1T === t2T) { showToast('It\'s tied! Play another round.', 'error'); return; }
     const winner = t1T < t2T ? team1Name : team2Name;
     const roundsCount = rounds.length;
     const totalScore = t1T < t2T ? t1T : t2T;
@@ -1199,7 +1138,7 @@ function declareWinner() {
 }
 
 function resetGame() {
-    if (!confirm(t('endGameConfirm'))) return;
+    if (!confirm('End this game? Main table records will be deleted.')) return;
     localStorage.removeItem('cardGame_activeGame'); rounds = [];
     removeSidebar();
     showCardsSetup(); updateTeamsUI(); calculateAndRenderLeaderboard();
@@ -1246,7 +1185,7 @@ function renderDominoMatchHistory() {
     const display = dominoShowAllHistory ? dominoMatchHistory : dominoMatchHistory.slice(0, 3);
     if (toggleBtn) {
         const span = toggleBtn.querySelector('span');
-        if (span) span.textContent = dominoShowAllHistory ? t('showTop3') : t('showAll');
+        if (span) span.textContent = dominoShowAllHistory ? 'Show Top 3' : 'Show All';
     }
     display.forEach(m => {
         const date = new Date(m.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -1260,7 +1199,7 @@ function renderDominoMatchHistory() {
             </div>
             <div class="history-detail">
                 <span class="history-scores">${m.team1} ${m.t1Total} — ${m.t2Total} ${m.team2}</span>
-                <span style="color:var(--text-muted);"> · ${t('by')} ${margin} · ${m.roundCount} ${t('rounds')}</span>
+                <span style="color:var(--text-muted);"> · by ${margin} · ${m.roundCount} rounds</span>
             </div>
         `;
         list.appendChild(div);
@@ -1401,7 +1340,7 @@ function saveDominoTargetFromInput() {
     if (!input) return true;
     const v = parseInt(input.value, 10);
     if (isNaN(v) || v < 1 || v > 9999) {
-        showToast(t('dominoTargetInvalid'), 'error');
+        showToast('Enter a valid target between 1 and 9999.', 'error');
         syncDominoTargetInput();
         return false;
     }
@@ -1415,8 +1354,8 @@ function saveDominoTargetFromInput() {
 function startDominoGame() {
     const t1 = document.getElementById('domino-team1-select').value;
     const t2 = document.getElementById('domino-team2-select').value;
-    if (!t1 || !t2) { showToast(t('selectBoth'), 'error'); return; }
-    if (t1 === t2) { showToast(t('differentTeams'), 'error'); return; }
+    if (!t1 || !t2) { showToast('Please select both teams.', 'error'); return; }
+    if (t1 === t2) { showToast('Please choose different teams.', 'error'); return; }
     if (!saveDominoTargetFromInput()) return;
     dominoTeam1Name = t1; dominoTeam2Name = t2; dominoRounds = [];
     saveDominoGameState(); setupDominoGameView();
@@ -1486,13 +1425,13 @@ function decrementDominoRoundWinMetric(name) {
 
 function addDominoRound() {
     const winner = document.getElementById('domino-winner-select-hidden').value;
-    if (!winner) { showToast(t('whoWon'), 'error'); return; }
+    if (!winner) { showToast('Who won this round?', 'error'); return; }
 
     const loserHandEl = document.getElementById('domino-loser-hand');
     const raw = loserHandEl.value;
-    if (raw === '') { showToast(t('dominoEnterLoserHand'), 'error'); return; }
+    if (raw === '') { showToast('Please enter the loser hand points.', 'error'); return; }
     const loserHand = parseInt(raw, 10);
-    if (isNaN(loserHand) || loserHand < 0) { showToast(t('dominoInvalidPoints'), 'error'); return; }
+    if (isNaN(loserHand) || loserHand < 0) { showToast('Points must be 0 or more.', 'error'); return; }
 
     const note = document.getElementById('domino-round-note').value.trim();
 
@@ -1512,14 +1451,14 @@ function addDominoRound() {
     loserHandEl.value = '';
 
     renderDominoTable(true);
-    showToast(`${t('roundAdded')} ${dominoRounds.length}`, 'success');
+    showToast(`Round added! ${dominoRounds.length}`, 'success');
     haptic(20);
 
     let t1T = 0, t2T = 0;
     dominoRounds.forEach(r => { t1T += r.t1; t2T += r.t2; });
     if (t1T >= dominoTarget || t2T >= dominoTarget) {
-        showToast(t('dominoTargetReached'), 'success', [
-            { label: t('declareWinner'), action: declareDominoWinner }
+        showToast('Target reached! Declare winner?', 'success', [
+            { label: 'Declare a Winner', action: declareDominoWinner }
         ]);
         haptic([30, 50, 30]);
     }
@@ -1687,7 +1626,7 @@ function updateDominoTargetBar(t1, t2) {
 function declareDominoWinner() {
     if (!dominoRounds.length) return;
     let t1T = 0, t2T = 0; dominoRounds.forEach(r => { t1T += r.t1; t2T += r.t2; });
-    if (t1T === t2T) { showToast(t('tiedGame'), 'error'); return; }
+    if (t1T === t2T) { showToast('It\'s tied! Play another round.', 'error'); return; }
     const winner = t1T > t2T ? dominoTeam1Name : dominoTeam2Name;
     const roundsCount = dominoRounds.length;
     const totalScore = t1T > t2T ? t1T : t2T;
@@ -1702,7 +1641,7 @@ function declareDominoWinner() {
 }
 
 function resetDominoGame() {
-    if (!confirm(t('dominoEndConfirm'))) return;
+    if (!confirm('End this Domino game?')) return;
     localStorage.removeItem('cardGame_domino_activeGame'); dominoRounds = [];
     removeSidebar();
     showDominoSetup(); updateTeamsUI(); calculateAndRenderDominoLeaderboard();
@@ -1718,33 +1657,33 @@ function injectSidebar() {
     rail.className = 'right-rail';
     rail.innerHTML = `
         <div id="sidebar-tracker" class="sidebar" style="display:block;">
-            <h2 data-i18n="sideTracker">Overall Score</h2>
-            <div class="info-text" data-i18n="sideTrackerInfo">Scores bound to active team pair</div>
+            <h2>Overall Score</h2>
+            <div class="info-text">Scores bound to active team pair</div>
             <div class="sidebar-team-section">
                 <div id="side-t1-title" class="sidebar-team-title">${team1Name}</div>
                 <div class="counter-row">
-                    <span class="counter-label" data-i18n="mainScore">Main Score</span>
+                    <span class="counter-label">Main Score</span>
                     <span id="val-t1Main" class="counter-value">0</span>
                 </div>
                 <div class="counter-row">
-                    <span class="counter-label" data-i18n="subScore">Sub Score</span>
+                    <span class="counter-label">Sub Score</span>
                     <span id="val-t1Sub" class="counter-value">0</span>
                 </div>
             </div>
             <div class="sidebar-team-section">
                 <div id="side-t2-title" class="sidebar-team-title">${team2Name}</div>
                 <div class="counter-row">
-                    <span class="counter-label" data-i18n="mainScore">Main Score</span>
+                    <span class="counter-label">Main Score</span>
                     <span id="val-t2Main" class="counter-value">0</span>
                 </div>
                 <div class="counter-row">
-                    <span class="counter-label" data-i18n="subScore">Sub Score</span>
+                    <span class="counter-label">Sub Score</span>
                     <span id="val-t2Sub" class="counter-value">0</span>
                 </div>
             </div>
             <button onclick="resetSideScores()" style="margin-top:16px;width:100%;background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--text-muted);font-size:12px;font-weight:500;letter-spacing:0.03em;transition:color 0.2s,border-color 0.2s,background 0.2s;" onmouseover="this.style.color='var(--danger,#f87171)';this.style.borderColor='var(--danger,#f87171)';this.style.background='rgba(248,113,113,0.06)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)';this.style.background='none'">
                 <span style="font-size:14px;">↺</span>
-                <span data-i18n="resetCounters">Reset Counters</span>
+                <span>Reset Counters</span>
             </button>
         </div>
     `;
@@ -1787,9 +1726,9 @@ function renderSideScores() {
 }
 
 function resetSideScores() {
-    if (!confirm(t('resetCountersConfirm'))) return;
+    if (!confirm('Reset counters to 0 for this match?')) return;
     currentSideScores = { t1Main: 0, t1Sub: 0, t2Main: 0, t2Sub: 0 }; saveTeamPairSideScores(); renderSideScores();
-    showToast(t('countersReset'), 'info');
+    showToast('Match counters reset.', 'info');
 }
 
 // ── Domino Side scores ──────────────────────────────────────────────────────
@@ -1826,7 +1765,7 @@ function injectDominoSidebar() {
             </div>
             <button onclick="resetDominoSideScores()" style="margin-top:16px;width:100%;background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--text-muted);font-size:12px;font-weight:500;letter-spacing:0.03em;transition:color 0.2s,border-color 0.2s,background 0.2s;" onmouseover="this.style.color='var(--danger,#f87171)';this.style.borderColor='var(--danger,#f87171)';this.style.background='rgba(248,113,113,0.06)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)';this.style.background='none'">
                 <span style="font-size:14px;">↺</span>
-                <span data-i18n="resetCounters">Reset Counters</span>
+                <span>Reset Counters</span>
             </button>
         </div>
     `;
@@ -1864,14 +1803,14 @@ function renderDominoSideScores() {
 }
 
 function resetDominoSideScores() {
-    if (!confirm(t('resetCountersConfirm'))) return;
+    if (!confirm('Reset counters to 0 for this match?')) return;
     dominoCurrentSideScores = { t1Main: 0, t1Sub: 0, t2Main: 0, t2Sub: 0 }; saveDominoTeamPairSideScores(); renderDominoSideScores();
-    showToast(t('countersReset'), 'info');
+    showToast('Match counters reset.', 'info');
 }
 
 // ── Sub-score Rollover Settings (setup screen) ─────────────────────────────
 function formatSubRolloverToast(n) {
-    return t('subRolloverToast').replace('{n}', n);
+    return 'Sub score hit {n} → +1 main!'.replace('{n}', n);
 }
 
 function loadSubRolloverSettings() {
@@ -1914,7 +1853,7 @@ function changeDominoSubRollover(amount) {
 function toggleLeaderboardAll() {
     showAllLeaderboard = !showAllLeaderboard;
     const btn = document.getElementById('leaderboard-toggle-btn');
-    if (btn) { const s = btn.querySelector('[data-i18n]'); if (s) s.textContent = showAllLeaderboard ? t('showTop1') : t('showAll'); }
+    if (btn) { const s = btn.querySelector('span'); if (s) s.textContent = showAllLeaderboard ? 'Show Top 1' : 'Show All'; }
     calculateAndRenderLeaderboard();
 }
 
@@ -1931,13 +1870,13 @@ function calculateAndRenderLeaderboard() {
     const tbody = document.querySelector('#leaderboard-table tbody');
     tbody.innerHTML = '';
     if (!display.length) {
-        tbody.innerHTML = `<tr><td class="lb-empty" colspan="5">${t('noLeaderboard')}</td></tr>`;
+        tbody.innerHTML = `<tr><td class="lb-empty" colspan="5">No leaderboard data available</td></tr>`;
         return;
     }
-    const lblTeam = t('teamName');
-    const lblMain = t('mainCol');
-    const lblSub = t('subCol');
-    const lblRnds = t('rndsCol');
+    const lblTeam = 'Team';
+    const lblMain = 'Main';
+    const lblSub = 'Sub';
+    const lblRnds = 'Rnds';
     display.forEach((row, i) => {
         const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1;
         const tr = document.createElement('tr');
@@ -1954,7 +1893,7 @@ function calculateAndRenderLeaderboard() {
 function toggleDominoLeaderboardAll() {
     dominoShowAllLeaderboard = !dominoShowAllLeaderboard;
     const btn = document.getElementById('domino-leaderboard-toggle-btn');
-    if (btn) { const s = btn.querySelector('span'); if (s) s.textContent = dominoShowAllLeaderboard ? t('showTop1') : t('showAll'); }
+    if (btn) { const s = btn.querySelector('span'); if (s) s.textContent = dominoShowAllLeaderboard ? 'Show Top 1' : 'Show All'; }
     calculateAndRenderDominoLeaderboard();
 }
 
@@ -1971,13 +1910,13 @@ function calculateAndRenderDominoLeaderboard() {
     const tbody = document.querySelector('#domino-leaderboard-table tbody');
     tbody.innerHTML = '';
     if (!display.length) {
-        tbody.innerHTML = `<tr><td class="lb-empty" colspan="5">${t('noLeaderboard')}</td></tr>`;
+        tbody.innerHTML = `<tr><td class="lb-empty" colspan="5">No leaderboard data available</td></tr>`;
         return;
     }
-    const lblTeam = t('teamName');
-    const lblMain = t('mainCol');
-    const lblSub = t('subCol');
-    const lblRnds = t('rndsCol');
+    const lblTeam = 'Team';
+    const lblMain = 'Main';
+    const lblSub = 'Sub';
+    const lblRnds = 'Rnds';
     display.forEach((row, i) => {
         const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1;
         const tr = document.createElement('tr');
@@ -2073,9 +2012,7 @@ window.onload = function () {
     loadDominoMatchHistory();
     loadCardsActiveGame();
     loadDominoActiveGame();
-    renderRoundTypes();
-    localStorage.removeItem('cardGame_lang');
-    applyTranslations();
+    initializeUI();
 
     if (dominoRounds.length > 0 && rounds.length === 0) {
         switchTab('domino');
