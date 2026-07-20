@@ -34,7 +34,16 @@ export async function updateSession(request: NextRequest) {
 
   // Contacts the auth server to validate the token. Do not replace with
   // getSession(), which trusts unverified cookie data.
-  await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  // First visit: start an anonymous session so scores can be kept without
+  // signing up, matching how the original localStorage app behaved. The
+  // account can be upgraded to email later without losing any data.
+  if (!user) {
+    await supabase.auth.signInAnonymously()
+  }
 
   return supabaseResponse
 }
