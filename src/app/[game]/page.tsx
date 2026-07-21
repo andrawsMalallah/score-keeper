@@ -4,6 +4,7 @@ import { TeamSlots } from '@/components/setup/TeamSlots'
 import { TeamManager } from '@/components/setup/TeamManager'
 import { GameSettings } from '@/components/setup/GameSettings'
 import { RoundTypeManager } from '@/components/setup/RoundTypeManager'
+import { StartMatch } from '@/components/setup/StartMatch'
 
 /**
  * Setup screen. Section order is fixed by REBUILD.md §6.4:
@@ -38,6 +39,7 @@ export default async function GameSetupPage({
       <SetupSection title="Teams">
         <div className="space-y-4">
           <TeamSlots game={game} />
+          <StartMatch game={game} config={config} />
           <TeamManager game={game} />
         </div>
       </SetupSection>
