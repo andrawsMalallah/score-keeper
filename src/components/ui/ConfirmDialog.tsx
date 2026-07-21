@@ -33,12 +33,15 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
 
+  /*
+   * Depends on `open`, not just on mount: React keeps the component instance
+   * alive across open/closed transitions, so an empty dependency array runs
+   * once and leaves later openings as an inert <dialog> that renders nothing.
+   * Effects run after the DOM commits, so the ref is set by the time this fires.
+   */
   useEffect(() => {
     const dialog = dialogRef.current
-    if (!dialog) return
-
-    if (open && !dialog.open) dialog.showModal()
-    if (!open && dialog.open) dialog.close()
+    if (open && dialog && !dialog.open) dialog.showModal()
   }, [open])
 
   // Escape fires the dialog's own cancel event; route it through the same
@@ -55,6 +58,11 @@ export function ConfirmDialog({
     dialog.addEventListener('cancel', onDialogCancel)
     return () => dialog.removeEventListener('cancel', onDialogCancel)
   }, [onCancel])
+
+  // Unmount while closed rather than hiding. Callers derive the title from the
+  // item being deleted, which is null when the dialog is shut, so staying
+  // mounted put strings like "Delete undefined?" in the accessibility tree.
+  if (!open) return null
 
   return (
     <dialog

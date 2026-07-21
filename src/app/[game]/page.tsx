@@ -3,6 +3,7 @@ import { getGameConfig, isGameType } from '@/lib/game/config'
 import { TeamSlots } from '@/components/setup/TeamSlots'
 import { TeamManager } from '@/components/setup/TeamManager'
 import { GameSettings } from '@/components/setup/GameSettings'
+import { RoundTypeManager } from '@/components/setup/RoundTypeManager'
 
 /**
  * Setup screen. Section order is fixed by REBUILD.md §6.4:
@@ -43,12 +44,14 @@ export default async function GameSetupPage({
 
       <SetupSection title="Settings">
         <GameSettings game={game} config={config} />
-        {config.usesRoundTypes && (
-          <p className="mt-4 text-xs text-bone-dim">
-            Round types are managed in the next phase.
-          </p>
-        )}
       </SetupSection>
+
+      {/* Only cards scores rounds from named presets, so only cards gets this. */}
+      {config.usesRoundTypes && (
+        <SetupSection title="Round types">
+          <RoundTypeManager />
+        </SetupSection>
+      )}
 
       <SetupSection title="History">
         <Placeholder>Match history arrives in phase 6.</Placeholder>

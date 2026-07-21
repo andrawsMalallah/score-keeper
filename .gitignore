@@ -44,6 +44,10 @@ next-env.d.ts
 # Playwright MCP scratch output (snapshots, console logs) — regenerated per run.
 .playwright-mcp/
 
+# Claude Code local settings. Already covered by a global gitignore on this
+# machine, but repeated here so the rule travels with the repo.
+.claude/
+
 # AI assistant context files — kept locally, deliberately not version-controlled.
 # REBUILD.md was never tracked and is also excluded via .git/info/exclude.
 AGENTS.md
