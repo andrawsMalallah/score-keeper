@@ -40,3 +40,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# AI assistant context files — kept locally, deliberately not version-controlled.
+# REBUILD.md was never tracked and is also excluded via .git/info/exclude.
+AGENTS.md
+CLAUDE.md
+MEMORY.md
+REBUILD.md
