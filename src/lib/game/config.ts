@@ -20,6 +20,8 @@ export interface GameConfig {
   usesTarget: boolean
   /** Human label for the game, used in tabs and the title badge. */
   label: string
+  /** Glyph shown in the title badge while a match of this game is running. */
+  badgeGlyph: string
 }
 
 export const GAME_CONFIGS: Record<GameType, GameConfig> = {
@@ -29,6 +31,7 @@ export const GAME_CONFIGS: Record<GameType, GameConfig> = {
     usesRoundTypes: true,
     usesTarget: false,
     label: 'Cards',
+    badgeGlyph: '♠',
   },
   domino: {
     winnerIs: 'higher',
@@ -36,6 +39,7 @@ export const GAME_CONFIGS: Record<GameType, GameConfig> = {
     usesRoundTypes: false,
     usesTarget: true,
     label: 'Domino',
+    badgeGlyph: '🁺',
   },
 }
 
