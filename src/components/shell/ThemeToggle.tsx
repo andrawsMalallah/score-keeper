@@ -35,7 +35,19 @@ export function ThemeToggle() {
   }, [syncSystemTheme])
 
   const isDark = theme === 'dark'
-  const label = isDark ? 'Switch to light theme' : 'Switch to dark theme'
+
+  /*
+   * Every theme-dependent attribute has to wait for the mount check, not just
+   * the icon: the server always renders the store's initial 'dark' while the
+   * client renders the real theme, so an unguarded label is a hydration
+   * mismatch for anyone on the light theme. The generic fallback is accurate in
+   * both themes, so assistive tech is never told the wrong thing.
+   */
+  const label = hasMounted
+    ? isDark
+      ? 'Switch to light theme'
+      : 'Switch to dark theme'
+    : 'Switch theme'
 
   return (
     <button

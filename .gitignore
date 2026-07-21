@@ -41,6 +41,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Playwright MCP scratch output (snapshots, console logs) — regenerated per run.
+.playwright-mcp/
+
 # AI assistant context files — kept locally, deliberately not version-controlled.
 # REBUILD.md was never tracked and is also excluded via .git/info/exclude.
 AGENTS.md
