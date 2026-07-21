@@ -1,6 +1,7 @@
 import { GAME_CONFIGS } from '@/lib/game/config'
 import type { GameType } from '@/lib/supabase/types'
 import { GameTabs } from './GameTabs'
+import { ImportExport } from './ImportExport'
 import { ThemeToggle } from './ThemeToggle'
 
 interface TopBarProps {
@@ -33,6 +34,7 @@ export function TopBar({ activeGame, matchInProgress = false }: TopBarProps) {
 
         <div className="ml-auto flex items-center gap-2">
           {!matchInProgress && <GameTabs activeGame={activeGame} />}
+          <ImportExport />
           <ThemeToggle />
         </div>
       </div>

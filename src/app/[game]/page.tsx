@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getGameConfig, isGameType } from '@/lib/game/config'
+import { LegacyDataOffer } from '@/components/shell/LegacyDataOffer'
 import { TeamSlots } from '@/components/setup/TeamSlots'
 import { TeamManager } from '@/components/setup/TeamManager'
 import { GameSettings } from '@/components/setup/GameSettings'
@@ -25,6 +26,8 @@ export default async function GameSetupPage({
 
   return (
     <div className="space-y-6">
+      <LegacyDataOffer />
+
       <div>
         <h1 className="font-display text-[22px] font-bold text-fg">
           {config.label}

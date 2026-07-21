@@ -19,6 +19,14 @@ export type GameType = 'cards' | 'domino'
 export type MatchStatus = 'active' | 'finished'
 export type Theme = 'auto' | 'light' | 'dark'
 
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
 export interface Database {
   public: {
     Tables: {
@@ -240,6 +248,10 @@ export interface Database {
       declare_winner: {
         Args: { p_match_id: string; p_winner_team_id: string }
         Returns: Database['public']['Tables']['matches']['Row']
+      }
+      import_backup: {
+        Args: { p_payload: Json }
+        Returns: undefined
       }
     }
     Enums: {
