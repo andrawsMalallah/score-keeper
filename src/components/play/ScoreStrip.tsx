@@ -18,9 +18,8 @@ interface ScoreStripProps {
 }
 
 /**
- * The rounds table, rendered as a paper score strip lying on the felt (§6.3):
- * bone background even in dark mode, ink mono numerals, a ruled centre divider.
- * This is the one loud object on the page — everything around it stays quiet.
+ * The rounds table, rendered as a score strip: a raised surface panel with
+ * mono numerals and a ruled centre divider.
  */
 export function ScoreStrip({
   match,
@@ -61,10 +60,10 @@ export function ScoreStrip({
 
   return (
     <div className="mx-auto w-full max-w-[560px]">
-      {/* The torn top edge of the paper strip. */}
+      {/* The torn top edge of the strip. */}
       <div
         aria-hidden="true"
-        className="h-2 bg-bone"
+        className="h-2 bg-surface"
         style={{
           maskImage:
             'radial-gradient(circle at 6px 8px, transparent 5px, black 5px)',
@@ -77,13 +76,13 @@ export function ScoreStrip({
         }}
       />
 
-      <div className="bg-bone px-3 pb-3 text-ink shadow-lg">
+      <div className="bg-surface px-3 pb-3 text-fg shadow-lg">
         <table className="w-full table-fixed border-collapse">
           <caption className="sr-only">
             Rounds for {team1Name} against {team2Name}
           </caption>
           <thead>
-            <tr className="border-b border-ink/20">
+            <tr className="border-b border-fg/20">
               <th scope="col" className="w-10 py-2 text-left text-[11px] font-semibold tracking-wide uppercase opacity-60">
                 #
               </th>
@@ -123,7 +122,7 @@ export function ScoreStrip({
 
           {rounds.length > 0 && (
             <tfoot>
-              <tr className="border-t-2 border-ink/30">
+              <tr className="border-t-2 border-fg/30">
                 <th scope="row" className="py-2 text-left text-[11px] font-semibold tracking-wide uppercase opacity-60">
                   Total
                 </th>

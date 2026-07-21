@@ -26,10 +26,10 @@ export default async function GameSetupPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-[22px] font-bold text-bone">
+        <h1 className="font-display text-[22px] font-bold text-fg">
           {config.label}
         </h1>
-        <p className="mt-1 text-sm text-bone-dim">
+        <p className="mt-1 text-sm text-muted">
           {config.winnerIs === 'lower'
             ? 'Lowest total wins.'
             : 'First to the target wins.'}
@@ -74,8 +74,8 @@ function SetupSection({
   children: React.ReactNode
 }) {
   return (
-    <section className="rounded-xl border border-felt-700 bg-felt-800 p-4">
-      <h2 className="font-display text-sm font-bold tracking-wide text-bone-dim uppercase">
+    <section className="rounded-xl border border-border bg-surface p-4">
+      <h2 className="font-display text-sm font-bold tracking-wide text-muted uppercase">
         {title}
       </h2>
       <div className="mt-3">{children}</div>
@@ -84,5 +84,5 @@ function SetupSection({
 }
 
 function Placeholder({ children }: { children: React.ReactNode }) {
-  return <p className="text-sm text-bone-dim">{children}</p>
+  return <p className="text-sm text-muted">{children}</p>
 }

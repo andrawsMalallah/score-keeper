@@ -12,9 +12,9 @@ import {
 } from '@/lib/game/scoring'
 
 /**
- * The thin two-tone strip above the controls (§6.4): brass from the left,
- * porcelain from the right, meeting at the momentum point — a tug-of-war rope
- * rather than a progress bar.
+ * The thin two-tone strip above the controls (§6.4): the accent from the left,
+ * the secondary accent from the right, meeting at the momentum point — a
+ * tug-of-war rope rather than a progress bar.
  *
  * Which measure it shows is config-driven: cards has no target, so it shows
  * relative momentum; domino shows progress toward the target.
@@ -45,10 +45,10 @@ export function ProgressBar({
       aria-valuemin={0}
       aria-valuemax={100}
       aria-label={label}
-      className="relative h-1 w-full overflow-hidden rounded-full bg-porcelain"
+      className="relative h-1 w-full overflow-hidden rounded-full bg-accent-secondary"
     >
       <div
-        className="h-full bg-brass transition-[width] duration-300"
+        className="h-full bg-accent transition-[width] duration-300"
         style={{ width: `${percent}%` }}
       />
     </div>
@@ -91,12 +91,12 @@ export function TotalsFooter({
   }
 
   return (
-    <p aria-live="polite" className="text-sm text-bone-dim">
+    <p aria-live="polite" className="text-sm text-muted">
       {leader === null ? (
         'Scores are tied'
       ) : (
         <>
-          <span className="font-semibold text-bone">
+          <span className="font-semibold text-fg">
             {leader === 'team1' ? team1Name : team2Name}
           </span>{' '}
           leads by <span className="numerals">{margin(totals)}</span>
@@ -108,12 +108,12 @@ export function TotalsFooter({
 
 function NeedsCell({ name, needed }: { name: string; needed: number }) {
   return (
-    <div className="rounded-lg border border-felt-700 bg-felt-900 px-3 py-2">
-      <p className="truncate text-xs text-bone-dim">{name}</p>
+    <div className="rounded-lg border border-border bg-bg px-3 py-2">
+      <p className="truncate text-xs text-muted">{name}</p>
       {needed === 0 ? (
-        <p className="text-sm font-semibold text-brass">✓ Target reached</p>
+        <p className="text-sm font-semibold text-accent">✓ Target reached</p>
       ) : (
-        <p className="text-sm text-bone">
+        <p className="text-sm text-fg">
           needs <span className="numerals font-semibold">{needed}</span>
         </p>
       )}

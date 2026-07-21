@@ -109,22 +109,22 @@ export function RoundForm({
   }
 
   return (
-    <div className="space-y-4 rounded-xl border border-felt-700 bg-felt-800 p-4">
+    <div className="space-y-4 rounded-xl border border-border bg-surface p-4">
       <fieldset>
-        <legend className="text-xs font-semibold tracking-wide text-bone-dim uppercase">
+        <legend className="text-xs font-semibold tracking-wide text-muted uppercase">
           Round winner
         </legend>
         <div className="mt-2 grid grid-cols-2 gap-2">
           <WinnerButton
             name={team1Name}
             selected={winner === 'team1'}
-            accent="brass"
+            accent="accent"
             onClick={() => selectWinner('team1')}
           />
           <WinnerButton
             name={team2Name}
             selected={winner === 'team2'}
-            accent="porcelain"
+            accent="accent-secondary"
             onClick={() => selectWinner('team2')}
           />
         </div>
@@ -132,7 +132,7 @@ export function RoundForm({
 
       {config.usesRoundTypes && roundTypes && roundTypes.length > 0 && (
         <fieldset>
-          <legend className="text-xs font-semibold tracking-wide text-bone-dim uppercase">
+          <legend className="text-xs font-semibold tracking-wide text-muted uppercase">
             Round type
           </legend>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -149,8 +149,8 @@ export function RoundForm({
                   aria-pressed={isSelected}
                   className={
                     isSelected
-                      ? 'rounded-full bg-brass px-3 py-1.5 text-xs font-semibold text-ink'
-                      : 'rounded-full border border-felt-700 px-3 py-1.5 text-xs text-bone-dim hover:text-bone'
+                      ? 'rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-on-accent'
+                      : 'rounded-full border border-border px-3 py-1.5 text-xs text-muted hover:text-fg'
                   }
                 >
                   {type.name}
@@ -166,7 +166,7 @@ export function RoundForm({
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label htmlFor="loser-points" className="text-sm text-bone">
+          <label htmlFor="loser-points" className="text-sm text-fg">
             Loser&rsquo;s hand points
           </label>
           <input
@@ -179,18 +179,18 @@ export function RoundForm({
             disabled={lockedLoserPoints !== null}
             onChange={(event) => setLoserPoints(event.target.value)}
             onKeyDown={(event) => event.key === 'Enter' && handleSubmit()}
-            className="numerals mt-1 w-full rounded-lg border border-felt-700 bg-felt-900 px-3 py-2 text-sm text-bone disabled:opacity-60"
+            className="numerals mt-1 w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm text-fg disabled:opacity-60"
           />
           {lockedLoserPoints !== null && (
-            <p className="mt-1 text-xs text-bone-dim">
+            <p className="mt-1 text-xs text-muted">
               Fixed by the {selectedType?.name} round type.
             </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="round-note" className="text-sm text-bone">
-            Note <span className="text-bone-dim">(optional)</span>
+          <label htmlFor="round-note" className="text-sm text-fg">
+            Note <span className="text-muted">(optional)</span>
           </label>
           <input
             id="round-note"
@@ -198,7 +198,7 @@ export function RoundForm({
             onChange={(event) => setNote(event.target.value)}
             onKeyDown={(event) => event.key === 'Enter' && handleSubmit()}
             maxLength={200}
-            className="mt-1 w-full rounded-lg border border-felt-700 bg-felt-900 px-3 py-2 text-sm text-bone"
+            className="mt-1 w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm text-fg"
           />
         </div>
       </div>
@@ -218,13 +218,13 @@ function WinnerButton({
 }: {
   name: string
   selected: boolean
-  accent: 'brass' | 'porcelain'
+  accent: 'accent' | 'accent-secondary'
   onClick: () => void
 }) {
   const selectedStyle =
-    accent === 'brass'
-      ? 'border-brass bg-brass text-ink'
-      : 'border-porcelain bg-porcelain text-ink'
+    accent === 'accent'
+      ? 'border-accent bg-accent text-on-accent'
+      : 'border-accent-secondary bg-accent-secondary text-on-accent-secondary'
 
   return (
     <button
@@ -234,7 +234,7 @@ function WinnerButton({
       className={`truncate rounded-lg border px-3 py-3 text-sm font-semibold transition-colors ${
         selected
           ? selectedStyle
-          : 'border-felt-700 bg-felt-900 text-bone hover:border-bone-dim'
+          : 'border-border bg-bg text-fg hover:border-muted'
       }`}
     >
       {name}

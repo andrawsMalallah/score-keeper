@@ -6,14 +6,14 @@ import { vibrate } from '@/lib/haptics'
 type Variant = 'primary' | 'secondary' | 'danger' | 'ghost'
 
 /**
- * Brass is the primary action colour (§6.1) and doubles as success — the app is
- * already green, so there is no separate success tone.
+ * The accent (brick) is the primary action colour and doubles as success —
+ * the app has no separate success tone.
  */
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-brass text-ink hover:opacity-90 font-semibold',
-  secondary: 'border border-felt-700 bg-felt-800 text-bone hover:border-bone-dim',
-  danger: 'border border-clay text-clay hover:bg-clay hover:text-bone',
-  ghost: 'text-bone-dim hover:text-bone',
+  primary: 'bg-accent text-on-accent hover:opacity-90 font-semibold',
+  secondary: 'border border-border bg-surface text-fg hover:border-muted',
+  danger: 'border border-danger text-danger hover:bg-danger hover:text-on-accent',
+  ghost: 'text-muted hover:text-fg',
 }
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

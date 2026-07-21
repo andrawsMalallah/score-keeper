@@ -34,7 +34,7 @@ export function Stepper({
 
   return (
     <div>
-      <label htmlFor={inputId} className="text-sm text-bone">
+      <label htmlFor={inputId} className="text-sm text-fg">
         {label}
       </label>
 
@@ -61,7 +61,7 @@ export function Stepper({
             // value to the minimum while the user is still typing.
             if (!Number.isNaN(next)) onChange(clamp(next))
           }}
-          className="numerals w-20 rounded-lg border border-felt-700 bg-felt-900 px-3 py-2 text-center text-sm text-bone"
+          className="numerals w-20 rounded-lg border border-border bg-bg px-3 py-2 text-center text-sm text-fg"
         />
 
         <Button
@@ -74,7 +74,7 @@ export function Stepper({
         </Button>
       </div>
 
-      {hint && <p className="mt-1.5 text-xs text-bone-dim">{hint}</p>}
+      {hint && <p className="mt-1.5 text-xs text-muted">{hint}</p>}
     </div>
   )
 }

@@ -5,13 +5,13 @@ import { useUiStore } from '@/stores/ui'
 import { useTeams } from '@/hooks/useTeams'
 
 /**
- * The two staged team positions. Brass marks Team 1 and porcelain Team 2
- * everywhere they appear (§6.1), so a glance at a colour identifies the side
- * without reading the label.
+ * The two staged team positions. The accent marks Team 1 and the secondary
+ * accent marks Team 2 everywhere they appear, so a glance at a colour
+ * identifies the side without reading the label.
  */
 const SLOT_STYLES = [
-  { badge: 'Team 1', accent: 'border-brass/50', text: 'text-brass' },
-  { badge: 'Team 2', accent: 'border-porcelain/50', text: 'text-porcelain' },
+  { badge: 'Team 1', accent: 'border-accent/50', text: 'text-accent' },
+  { badge: 'Team 2', accent: 'border-accent-secondary/50', text: 'text-accent-secondary' },
 ] as const
 
 export function TeamSlots({ game }: { game: GameType }) {
@@ -31,7 +31,7 @@ export function TeamSlots({ game }: { game: GameType }) {
         return (
           <div
             key={style.badge}
-            className={`rounded-xl border bg-felt-900 p-3 ${name ? style.accent : 'border-dashed border-felt-700'}`}
+            className={`rounded-xl border bg-bg p-3 ${name ? style.accent : 'border-dashed border-border'}`}
           >
             <div className="flex items-start justify-between gap-2">
               <span
@@ -45,7 +45,7 @@ export function TeamSlots({ game }: { game: GameType }) {
                   type="button"
                   onClick={() => clearSlot(game, index as 0 | 1)}
                   aria-label={`Clear ${style.badge}`}
-                  className="rounded text-bone-dim hover:text-bone"
+                  className="rounded text-muted hover:text-fg"
                 >
                   ✕
                 </button>
@@ -53,7 +53,7 @@ export function TeamSlots({ game }: { game: GameType }) {
             </div>
 
             <p
-              className={`mt-1 truncate text-sm ${name ? 'text-bone' : 'text-bone-dim'}`}
+              className={`mt-1 truncate text-sm ${name ? 'text-fg' : 'text-muted'}`}
             >
               {name ?? 'Tap a team below'}
             </p>

@@ -68,15 +68,15 @@ export function ConfirmDialog({
     <dialog
       ref={dialogRef}
       aria-labelledby="confirm-dialog-title"
-      className="max-w-sm rounded-xl border border-felt-700 bg-felt-800 p-5 text-bone backdrop:bg-black/60 open:animate-none"
+      className="max-w-sm rounded-xl border border-border bg-surface p-5 text-fg backdrop:bg-black/60 open:animate-none"
     >
       <h2
         id="confirm-dialog-title"
-        className="font-display text-base font-bold text-bone"
+        className="font-display text-base font-bold text-fg"
       >
         {title}
       </h2>
-      <p className="mt-2 text-sm text-bone-dim">{body}</p>
+      <p className="mt-2 text-sm text-muted">{body}</p>
 
       <div className="mt-5 flex justify-end gap-2">
         <Button variant="ghost" onClick={onCancel}>

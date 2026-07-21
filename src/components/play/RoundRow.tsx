@@ -45,7 +45,7 @@ export function RoundRow({
 
   return (
     <>
-      <tr className="border-b border-ink/10">
+      <tr className="border-b border-fg/10">
         <td className="py-1.5">
           <span className="numerals text-xs opacity-50" aria-hidden="true">
             {badge}
@@ -57,7 +57,7 @@ export function RoundRow({
           {round.t1_points}
         </td>
         {/* The hand-ruled centre divider between the two team columns. */}
-        <td aria-hidden="true" className="border-l border-ink/20" />
+        <td aria-hidden="true" className="border-l border-fg/20" />
         <td className="numerals py-1.5 text-left text-[15px]">
           {round.t2_points}
         </td>
@@ -135,7 +135,7 @@ function EditRow({
   }
 
   return (
-    <tr className="border-b border-ink/10 bg-ink/5">
+    <tr className="border-b border-fg/10 bg-fg/5">
       <td className="py-1.5 text-xs opacity-50">{index + 1}</td>
 
       <td className="py-1.5 pr-1">
@@ -150,10 +150,10 @@ function EditRow({
           value={t1}
           onChange={(event) => setT1(event.target.value)}
           onKeyDown={onKeyDown}
-          className="numerals w-full rounded border border-ink/30 bg-bone px-1 py-0.5 text-right text-[15px]"
+          className="numerals w-full rounded border border-fg/30 bg-bg px-1 py-0.5 text-right text-[15px]"
         />
       </td>
-      <td aria-hidden="true" className="border-l border-ink/20" />
+      <td aria-hidden="true" className="border-l border-fg/20" />
       <td className="py-1.5 pl-1">
         <label className="sr-only" htmlFor={`edit-t2-${round.id}`}>
           Team 2 points for round {index + 1}
@@ -164,7 +164,7 @@ function EditRow({
           value={t2}
           onChange={(event) => setT2(event.target.value)}
           onKeyDown={onKeyDown}
-          className="numerals w-full rounded border border-ink/30 bg-bone px-1 py-0.5 text-[15px]"
+          className="numerals w-full rounded border border-fg/30 bg-bg px-1 py-0.5 text-[15px]"
         />
       </td>
 

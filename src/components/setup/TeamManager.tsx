@@ -64,7 +64,7 @@ export function TeamManager({ game }: { game: GameType }) {
           onKeyDown={(event) => event.key === 'Enter' && handleAdd()}
           placeholder="Add a team"
           maxLength={40}
-          className="flex-1 rounded-lg border border-felt-700 bg-felt-900 px-3 py-2 text-sm text-bone placeholder:text-bone-dim"
+          className="flex-1 rounded-lg border border-border bg-bg px-3 py-2 text-sm text-fg placeholder:text-muted"
         />
         <Button variant="primary" onClick={handleAdd}>
           Add
@@ -72,7 +72,7 @@ export function TeamManager({ game }: { game: GameType }) {
       </div>
 
       {isPending ? (
-        <p className="text-sm text-bone-dim">Loading teams…</p>
+        <p className="text-sm text-muted">Loading teams…</p>
       ) : teams && teams.length > 0 ? (
         <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {teams.map((team) => (
@@ -101,9 +101,9 @@ export function TeamManager({ game }: { game: GameType }) {
           ))}
         </ul>
       ) : (
-        <div className="rounded-lg border border-dashed border-felt-700 p-6 text-center">
-          <p className="text-sm text-bone">No teams saved</p>
-          <p className="mt-1 text-xs text-bone-dim">
+        <div className="rounded-lg border border-dashed border-border p-6 text-center">
+          <p className="text-sm text-fg">No teams saved</p>
+          <p className="mt-1 text-xs text-muted">
             Add teams above to get started.
           </p>
         </div>
@@ -153,10 +153,10 @@ function TeamCard({
 }: TeamCardProps) {
   const assignedStyle =
     slotIndex === 0
-      ? 'border-brass bg-brass/10'
+      ? 'border-accent bg-accent/10'
       : slotIndex === 1
-        ? 'border-porcelain bg-porcelain/10'
-        : 'border-felt-700 bg-felt-900'
+        ? 'border-accent-secondary bg-accent-secondary/10'
+        : 'border-border bg-bg'
 
   if (isEditing) {
     return (
@@ -179,7 +179,7 @@ function TeamCard({
           type="button"
           onClick={onTap}
           aria-pressed={slotIndex >= 0}
-          className="flex-1 truncate text-left text-sm text-bone"
+          className="flex-1 truncate text-left text-sm text-fg"
         >
           {team.name}
         </button>
@@ -188,7 +188,7 @@ function TeamCard({
           type="button"
           onClick={onStartEdit}
           aria-label={`Rename ${team.name}`}
-          className="rounded px-1 text-xs text-bone-dim hover:text-bone"
+          className="rounded px-1 text-xs text-muted hover:text-fg"
         >
           ✎
         </button>
@@ -196,7 +196,7 @@ function TeamCard({
           type="button"
           onClick={onDelete}
           aria-label={`Delete ${team.name}`}
-          className="rounded px-1 text-xs text-bone-dim hover:text-clay"
+          className="rounded px-1 text-xs text-muted hover:text-danger"
         >
           ✕
         </button>
@@ -239,14 +239,14 @@ function RenameForm({
           if (event.key === 'Escape') onCancel()
         }}
         maxLength={40}
-        className="w-full rounded border border-felt-700 bg-felt-900 px-2 py-1 text-sm text-bone"
+        className="w-full rounded border border-border bg-bg px-2 py-1 text-sm text-fg"
       />
       <div className="mt-1 flex justify-end gap-1">
         <button
           type="button"
           onClick={onCancel}
           aria-label="Cancel rename"
-          className="rounded px-1 text-xs text-bone-dim hover:text-bone"
+          className="rounded px-1 text-xs text-muted hover:text-fg"
         >
           ✕
         </button>
@@ -254,7 +254,7 @@ function RenameForm({
           type="button"
           onClick={() => onSubmit(draft.trim())}
           aria-label="Save name"
-          className="rounded px-1 text-xs text-brass"
+          className="rounded px-1 text-xs text-accent"
         >
           ✓
         </button>

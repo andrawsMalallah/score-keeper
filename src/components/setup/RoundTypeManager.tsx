@@ -65,24 +65,24 @@ export function RoundTypeManager() {
       />
 
       {isPending ? (
-        <p className="text-sm text-bone-dim">Loading round types…</p>
+        <p className="text-sm text-muted">Loading round types…</p>
       ) : roundTypes && roundTypes.length > 0 ? (
         <ul className="space-y-2">
           {roundTypes.map((type) => (
             <li
               key={type.id}
-              className="flex items-center gap-2 rounded-lg border border-felt-700 bg-felt-900 p-2"
+              className="flex items-center gap-2 rounded-lg border border-border bg-bg p-2"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="truncate text-sm text-bone">{type.name}</span>
+                  <span className="truncate text-sm text-fg">{type.name}</span>
                   {type.is_default && (
-                    <span className="shrink-0 rounded-full bg-brass px-2 py-0.5 text-[10px] font-semibold text-ink">
+                    <span className="shrink-0 rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-on-accent">
                       Default
                     </span>
                   )}
                 </div>
-                <p className="numerals mt-0.5 text-xs text-bone-dim">
+                <p className="numerals mt-0.5 text-xs text-muted">
                   W {type.winner_pts}
                   {type.loser_pts !== null && ` · L ${type.loser_pts}`}
                 </p>
@@ -102,7 +102,7 @@ export function RoundTypeManager() {
                 type="button"
                 onClick={() => handleDelete(type)}
                 aria-label={`Delete ${type.name}`}
-                className="shrink-0 rounded px-1 text-xs text-bone-dim hover:text-clay"
+                className="shrink-0 rounded px-1 text-xs text-muted hover:text-danger"
               >
                 ✕
               </button>
@@ -110,7 +110,7 @@ export function RoundTypeManager() {
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-bone-dim">No round types yet.</p>
+        <p className="text-sm text-muted">No round types yet.</p>
       )}
 
       <ConfirmDialog
@@ -191,7 +191,7 @@ function AddRoundTypeForm({ onAdd }: { onAdd: (input: AddInput) => boolean }) {
           onChange={(event) => setName(event.target.value)}
           placeholder="Name"
           maxLength={ROUND_TYPE_RULES.nameMaxLength}
-          className="w-full rounded-lg border border-felt-700 bg-felt-900 px-3 py-2 text-sm text-bone placeholder:text-bone-dim"
+          className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm text-fg placeholder:text-muted"
         />
       </div>
 
@@ -207,7 +207,7 @@ function AddRoundTypeForm({ onAdd }: { onAdd: (input: AddInput) => boolean }) {
           value={winnerPts}
           onChange={(event) => setWinnerPts(event.target.value)}
           placeholder="Win pts"
-          className="numerals w-full rounded-lg border border-felt-700 bg-felt-900 px-3 py-2 text-sm text-bone placeholder:font-sans placeholder:text-bone-dim"
+          className="numerals w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm text-fg placeholder:font-sans placeholder:text-muted"
         />
       </div>
 
@@ -223,7 +223,7 @@ function AddRoundTypeForm({ onAdd }: { onAdd: (input: AddInput) => boolean }) {
           value={loserPts}
           onChange={(event) => setLoserPts(event.target.value)}
           placeholder="Lose pts"
-          className="numerals w-full rounded-lg border border-felt-700 bg-felt-900 px-3 py-2 text-sm text-bone placeholder:font-sans placeholder:text-bone-dim"
+          className="numerals w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm text-fg placeholder:font-sans placeholder:text-muted"
         />
       </div>
 

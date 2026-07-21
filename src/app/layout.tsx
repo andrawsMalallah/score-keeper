@@ -34,11 +34,13 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  // The felt background, so mobile browser chrome matches the page instead of
+  // The page background, so mobile browser chrome matches the page instead of
   // flashing white. Both themes are declared so the OS picks the right one.
+  // Hex duplicates of --bg from globals.css, since <meta theme-color> needs a
+  // static value and can't reference a CSS custom property.
   themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#141F18' },
-    { media: '(prefers-color-scheme: light)', color: '#E9E2CF' },
+    { media: '(prefers-color-scheme: dark)', color: '#10141a' },
+    { media: '(prefers-color-scheme: light)', color: '#faf6ee' },
   ],
 }
 

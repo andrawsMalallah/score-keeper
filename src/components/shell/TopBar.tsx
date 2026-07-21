@@ -16,15 +16,15 @@ export function TopBar({ activeGame, matchInProgress = false }: TopBarProps) {
   const config = GAME_CONFIGS[activeGame]
 
   return (
-    <header className="border-b border-felt-700">
+    <header className="border-b border-border">
       <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="font-display text-lg font-extrabold tracking-tight text-bone">
+          <span className="font-display text-lg font-extrabold tracking-tight text-fg">
             Score Keeper
           </span>
 
           {matchInProgress && (
-            <span className="rounded-full border border-felt-700 bg-felt-800 px-2.5 py-1 text-xs text-bone-dim">
+            <span className="rounded-full border border-border bg-surface px-2.5 py-1 text-xs text-muted">
               <span aria-hidden="true">{config.badgeGlyph}</span>{' '}
               {config.label}
             </span>

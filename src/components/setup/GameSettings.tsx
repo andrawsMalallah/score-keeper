@@ -26,7 +26,7 @@ export function GameSettings({
   const updateSettings = useUpdateSettings()
 
   if (isPending) {
-    return <p className="text-sm text-bone-dim">Loading settings…</p>
+    return <p className="text-sm text-muted">Loading settings…</p>
   }
 
   // The settings row is created on first change, so fall back to the same

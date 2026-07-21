@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 /*
- * "Baize & Bone" — the design tokens from REBUILD.md §6.1.
+ * "Ledger" — the design tokens, matching LEDGER-COLORS.md at the repo root.
  *
- * The reference is the table these games are played on: green baize, bone
- * tiles, a paper score strip. The UI is the quiet dark table; the score strip
- * is the only bright object on it. Dark is the primary theme.
+ * Warm ink/paper tones rather than neutral gray: a brick accent carries Team 1
+ * and primary actions, a felt-green secondary carries Team 2. Dark is the
+ * primary theme.
  *
  * Themes are driven by a data-theme attribute on <html> rather than the
  * prefers-color-scheme media query alone, because the user's explicit choice
@@ -15,44 +15,46 @@
 
 :root,
 :root[data-theme='dark'] {
-  --felt-900: #141f18; /* page background: deep bottle-green baize */
-  --felt-800: #1b2a20; /* raised cards/panels */
-  --felt-700: #24352a; /* borders, dividers — never pure gray */
-  --bone: #ede6d4; /* primary text; also the score-strip paper */
-  --bone-dim: #9fac9b; /* secondary text (green-tinted, not gray) */
-  --brass: #c9a24b; /* Team 1 + primary actions — the brass tray */
-  --porcelain: #8fb4d6; /* Team 2 — café porcelain blue */
-  --clay: #c05b4d; /* danger/destructive — muted clay red */
-  --ink: #1c2b21; /* text on bone surfaces */
+  --bg: oklch(19% 0.014 260); /* page background: deep ink-navy */
+  --surface: oklch(24% 0.016 260); /* raised cards/panels/modals */
+  --border: oklch(33% 0.02 260); /* borders, dividers — never plain gray */
+  --fg: oklch(94% 0.01 85); /* primary text */
+  --muted: oklch(66% 0.02 260); /* secondary text */
+  --accent: oklch(68% 0.17 35); /* Team 1 + primary actions — brick */
+  --accent-secondary: oklch(66% 0.1 150); /* Team 2 — felt green */
+  --danger: oklch(58% 0.19 25); /* destructive actions — a darker, redder step off brick */
+  --on-accent: oklch(15% 0.02 35); /* text on the brick accent */
+  --on-accent-secondary: oklch(15% 0.02 150); /* text on the felt accent */
 }
 
 :root[data-theme='light'] {
-  --felt-900: #e9e2cf; /* bone paper becomes the page */
-  --felt-800: #f2eddd;
-  --felt-700: #d4ccb4;
-  --bone: #1c2b21; /* deep green ink */
-  --bone-dim: #5e6b5d;
-  /* Team and danger hues hold their identity but darken for contrast on paper. */
-  --brass: #8a6a22;
-  --porcelain: #3d6b96;
-  --clay: #9c3d30;
-  --ink: #1c2b21;
+  --bg: oklch(97.5% 0.012 85); /* warm paper */
+  --surface: oklch(99% 0.006 85);
+  --border: oklch(88% 0.015 85);
+  --fg: oklch(22% 0.02 260);
+  --muted: oklch(46% 0.02 260);
+  --accent: oklch(53% 0.17 35);
+  --accent-secondary: oklch(42% 0.09 150);
+  --danger: oklch(46% 0.19 25);
+  --on-accent: oklch(98% 0.01 85);
+  --on-accent-secondary: oklch(98% 0.01 150);
 }
 
 /*
- * Expose the tokens to Tailwind so utilities like bg-felt-800 and text-bone
+ * Expose the tokens to Tailwind so utilities like bg-surface and text-fg
  * work alongside raw var() usage. Tailwind v4 reads these from @theme.
  */
 @theme inline {
-  --color-felt-900: var(--felt-900);
-  --color-felt-800: var(--felt-800);
-  --color-felt-700: var(--felt-700);
-  --color-bone: var(--bone);
-  --color-bone-dim: var(--bone-dim);
-  --color-brass: var(--brass);
-  --color-porcelain: var(--porcelain);
-  --color-clay: var(--clay);
-  --color-ink: var(--ink);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-danger: var(--danger);
+  --color-on-accent: var(--on-accent);
+  --color-on-accent-secondary: var(--on-accent-secondary);
 
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
@@ -60,8 +62,8 @@
 }
 
 body {
-  background: var(--felt-900);
-  color: var(--bone);
+  background: var(--bg);
+  color: var(--fg);
   font-family: var(--font-sans);
   font-size: 15px; /* body; UI chrome steps down to 13px per §6.2 */
 }
@@ -75,11 +77,23 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* A single visible focus treatment, brass, on everything keyboard-reachable. */
+/* A single visible focus treatment, the accent color, on everything keyboard-reachable. */
 :focus-visible {
-  outline: 2px solid var(--brass);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 2px;
+}
+
+/* The victory modal's one orchestrated entrance (§6.5). */
+@keyframes victory-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /*
