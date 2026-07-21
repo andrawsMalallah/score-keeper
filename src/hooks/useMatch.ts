@@ -74,6 +74,46 @@ export function useStartMatch(game: GameType) {
   })
 }
 
+export interface DeclareWinnerInput {
+  matchId: string
+  winnerTeamId: string
+}
+
+/**
+ * Archives the match and credits the winner's pair tally via the
+ * `declare_winner` RPC (§2.9). Both writes happen in one Postgres function so
+ * they cannot partially apply.
+ */
+export function useDeclareWinner(game: GameType) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (input: DeclareWinnerInput): Promise<Match> => {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .rpc('declare_winner', {
+          p_match_id: input.matchId,
+          p_winner_team_id: input.winnerTeamId,
+        })
+        .single()
+
+      if (error) throw error
+      return data
+    },
+
+    onSuccess: () => {
+      queryClient.setQueryData(activeMatchKey(game), null)
+      queryClient.invalidateQueries({ queryKey: ['leaderboard'] })
+      queryClient.invalidateQueries({ queryKey: ['pair-tally'] })
+      queryClient.invalidateQueries({ queryKey: ['history', game] })
+    },
+
+    onError: (error) => {
+      toast.error(`Could not declare a winner. ${error.message}`)
+    },
+  })
+}
+
 /**
  * Abandons the live match without archiving it (§2.4). Deleting rather than
  * marking it finished is what keeps it out of history: history is this same

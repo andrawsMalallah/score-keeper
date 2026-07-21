@@ -236,7 +236,12 @@ export interface Database {
         Relationships: []
       }
     }
-    Functions: Record<string, never>
+    Functions: {
+      declare_winner: {
+        Args: { p_match_id: string; p_winner_team_id: string }
+        Returns: Database['public']['Tables']['matches']['Row']
+      }
+    }
     Enums: {
       game_type: GameType
       match_status: MatchStatus

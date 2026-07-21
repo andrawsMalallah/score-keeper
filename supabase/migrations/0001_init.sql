@@ -144,3 +144,62 @@ end $$;
 create trigger on_user_created
   after insert on auth.users
   for each row execute function seed_new_user();
+
+-- ── Declare a winner ─────────────────────────────────────────────────────
+-- Archives the match and credits the winner's pair tally (+1 Sub, rolling
+-- into +1 Main at the configured threshold) as a single atomic write, so a
+-- partial failure can never archive a match without crediting the tally.
+create or replace function declare_winner(p_match_id uuid, p_winner_team_id uuid)
+returns matches
+language plpgsql security invoker set search_path = public as $$
+declare
+  v_match     matches;
+  v_low       uuid;
+  v_high      uuid;
+  v_rollover  int;
+begin
+  select * into v_match from matches
+    where id = p_match_id and status = 'active' and user_id = auth.uid()
+    for update;
+  if not found then
+    raise exception 'Match not found or already finished';
+  end if;
+
+  if p_winner_team_id not in (v_match.team1_id, v_match.team2_id) then
+    raise exception 'Winner must be one of the match teams';
+  end if;
+
+  v_low  := least(v_match.team1_id, v_match.team2_id);
+  v_high := greatest(v_match.team1_id, v_match.team2_id);
+
+  select case when v_match.game = 'cards' then cards_sub_rollover else domino_sub_rollover end
+    into v_rollover
+    from settings where user_id = auth.uid();
+  v_rollover := coalesce(v_rollover, 10);
+
+  insert into pair_tallies (user_id, game, low_team_id, high_team_id)
+  values (auth.uid(), v_match.game, v_low, v_high)
+  on conflict (user_id, game, low_team_id, high_team_id) do nothing;
+
+  if p_winner_team_id = v_low then
+    update pair_tallies set
+      low_sub  = case when low_sub + 1 >= v_rollover then 0 else low_sub + 1 end,
+      low_main = case when low_sub + 1 >= v_rollover then low_main + 1 else low_main end
+    where user_id = auth.uid() and game = v_match.game
+      and low_team_id = v_low and high_team_id = v_high;
+  else
+    update pair_tallies set
+      high_sub  = case when high_sub + 1 >= v_rollover then 0 else high_sub + 1 end,
+      high_main = case when high_sub + 1 >= v_rollover then high_main + 1 else high_main end
+    where user_id = auth.uid() and game = v_match.game
+      and low_team_id = v_low and high_team_id = v_high;
+  end if;
+
+  update matches
+    set status = 'finished', winner_team_id = p_winner_team_id, finished_at = now()
+    where id = p_match_id
+    returning * into v_match;
+
+  return v_match;
+end;
+$$;
