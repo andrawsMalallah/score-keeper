@@ -14,23 +14,12 @@ export default async function Home() {
 
   const { data: activeMatches } = await supabase
     .from('matches')
-    .select('id, game')
+    .select('game, rounds(id)')
     .eq('status', 'active')
 
-  // Which of those matches actually has rounds. Queried separately rather than
-  // as an embedded join because the hand-written Database types carry no
-  // relationship metadata, so `matches(rounds(id))` would not type-check.
-  const activeIds = activeMatches?.map((match) => match.id) ?? []
-  const { data: playedRounds } = activeIds.length
-    ? await supabase.from('rounds').select('match_id').in('match_id', activeIds)
-    : { data: [] }
-
-  const matchesWithRounds = new Set(
-    playedRounds?.map((round) => round.match_id) ?? [],
-  )
   const hasRounds = (game: string) =>
     activeMatches?.some(
-      (match) => match.game === game && matchesWithRounds.has(match.id),
+      (match) => match.game === game && match.rounds.length > 0,
     ) ?? false
 
   redirect(hasRounds('domino') && !hasRounds('cards') ? '/domino' : '/cards')

@@ -1,5 +1,8 @@
 import { notFound } from 'next/navigation'
 import { getGameConfig, isGameType } from '@/lib/game/config'
+import { TeamSlots } from '@/components/setup/TeamSlots'
+import { TeamManager } from '@/components/setup/TeamManager'
+import { GameSettings } from '@/components/setup/GameSettings'
 
 /**
  * Setup screen. Section order is fixed by REBUILD.md §6.4:
@@ -32,15 +35,19 @@ export default async function GameSetupPage({
       </div>
 
       <SetupSection title="Teams">
-        <Placeholder>Team slots and team manager arrive in phase 4.</Placeholder>
+        <div className="space-y-4">
+          <TeamSlots game={game} />
+          <TeamManager game={game} />
+        </div>
       </SetupSection>
 
       <SetupSection title="Settings">
-        <Placeholder>
-          Rollover stepper
-          {config.usesTarget && ', target picker'}
-          {config.usesRoundTypes && ', round types'} arrive in phase 4.
-        </Placeholder>
+        <GameSettings game={game} config={config} />
+        {config.usesRoundTypes && (
+          <p className="mt-4 text-xs text-bone-dim">
+            Round types are managed in the next phase.
+          </p>
+        )}
       </SetupSection>
 
       <SetupSection title="History">

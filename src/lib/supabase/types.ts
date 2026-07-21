@@ -7,6 +7,12 @@
  *   npx supabase gen types typescript --project-id ihbdsixulnyqxehpqtvg > src/lib/supabase/types.ts
  *
  * Keep this file in step with the migrations whenever the schema changes.
+ *
+ * The `Relationships` arrays are what let PostgREST embedded joins such as
+ * `.select('*, teams(name)')` type-check. They are hand-written too, so a new
+ * foreign key needs an entry here or the join silently resolves to `never`.
+ * Constraint names follow Postgres's default `<table>_<column>_fkey`, since the
+ * migration declares the references inline without naming them.
  */
 
 export type GameType = 'cards' | 'domino'
@@ -107,7 +113,29 @@ export interface Database {
           finished_at?: string | null
         }
         Update: Partial<Database['public']['Tables']['matches']['Insert']>
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'matches_team1_id_fkey'
+            columns: ['team1_id']
+            isOneToOne: false
+            referencedRelation: 'teams'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'matches_team2_id_fkey'
+            columns: ['team2_id']
+            isOneToOne: false
+            referencedRelation: 'teams'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'matches_winner_team_id_fkey'
+            columns: ['winner_team_id']
+            isOneToOne: false
+            referencedRelation: 'teams'
+            referencedColumns: ['id']
+          },
+        ]
       }
       rounds: {
         Row: {
@@ -134,7 +162,22 @@ export interface Database {
           created_at?: string
         }
         Update: Partial<Database['public']['Tables']['rounds']['Insert']>
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'rounds_match_id_fkey'
+            columns: ['match_id']
+            isOneToOne: false
+            referencedRelation: 'matches'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'rounds_winner_team_id_fkey'
+            columns: ['winner_team_id']
+            isOneToOne: false
+            referencedRelation: 'teams'
+            referencedColumns: ['id']
+          },
+        ]
       }
       pair_tallies: {
         Row: {
@@ -161,7 +204,22 @@ export interface Database {
           high_sub?: number
         }
         Update: Partial<Database['public']['Tables']['pair_tallies']['Insert']>
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'pair_tallies_low_team_id_fkey'
+            columns: ['low_team_id']
+            isOneToOne: false
+            referencedRelation: 'teams'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'pair_tallies_high_team_id_fkey'
+            columns: ['high_team_id']
+            isOneToOne: false
+            referencedRelation: 'teams'
+            referencedColumns: ['id']
+          },
+        ]
       }
     }
     Views: {
