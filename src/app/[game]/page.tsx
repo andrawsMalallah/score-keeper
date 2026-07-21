@@ -5,13 +5,13 @@ import { TeamManager } from '@/components/setup/TeamManager'
 import { GameSettings } from '@/components/setup/GameSettings'
 import { RoundTypeManager } from '@/components/setup/RoundTypeManager'
 import { StartMatch } from '@/components/setup/StartMatch'
+import { MatchHistory } from '@/components/setup/MatchHistory'
+import { Leaderboard } from '@/components/setup/Leaderboard'
+import { SetupSection } from '@/components/setup/SetupSection'
 
 /**
  * Setup screen. Section order is fixed by REBUILD.md §6.4:
  * slots → settings → team manager → history → leaderboard.
- *
- * Phase 4 replaces each placeholder with the real component; the order and the
- * shared-shell structure are what this phase establishes.
  */
 export default async function GameSetupPage({
   params,
@@ -55,34 +55,13 @@ export default async function GameSetupPage({
         </SetupSection>
       )}
 
-      <SetupSection title="History">
-        <Placeholder>Match history arrives in phase 6.</Placeholder>
-      </SetupSection>
+      {/* MatchHistory renders its own card and hides it entirely when there
+          are no archived matches yet (§2.8), unlike the other sections. */}
+      <MatchHistory game={game} />
 
       <SetupSection title="Leaderboard">
-        <Placeholder>Leaderboard arrives in phase 6.</Placeholder>
+        <Leaderboard game={game} />
       </SetupSection>
     </div>
   )
-}
-
-function SetupSection({
-  title,
-  children,
-}: {
-  title: string
-  children: React.ReactNode
-}) {
-  return (
-    <section className="rounded-xl border border-border bg-surface p-4">
-      <h2 className="font-display text-sm font-bold tracking-wide text-muted uppercase">
-        {title}
-      </h2>
-      <div className="mt-3">{children}</div>
-    </section>
-  )
-}
-
-function Placeholder({ children }: { children: React.ReactNode }) {
-  return <p className="text-sm text-muted">{children}</p>
 }

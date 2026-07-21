@@ -99,6 +99,9 @@ export function useAddTeam(game: GameType) {
           existing.id === context?.optimisticId ? team : existing,
         ),
       )
+      // A new team needs a leaderboard row (0 main/sub/rounds) immediately,
+      // not just once it has played a match.
+      queryClient.invalidateQueries({ queryKey: ['leaderboard', game] })
     },
   })
 }

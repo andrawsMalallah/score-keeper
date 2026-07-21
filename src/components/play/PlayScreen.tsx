@@ -23,6 +23,7 @@ import { toast } from '@/stores/toasts'
 import { vibrate } from '@/lib/haptics'
 import { Button } from '@/components/ui/Button'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { PairTallyRail } from './PairTallyRail'
 import { RoundForm } from './RoundForm'
 import { ScoreStrip } from './ScoreStrip'
 import { ProgressBar, TotalsFooter } from './ProgressBar'
@@ -51,12 +52,18 @@ export function PlayScreen({ game }: { game: GameType }) {
   }, [matchPending, match, victory, router, game])
 
   function startNewMatch(finished: VictoryData) {
-    setVictory(null)
-    startMatch.mutate({
-      team1Id: finished.team1Id,
-      team2Id: finished.team2Id,
-      targetPoints: finished.targetPoints,
-    })
+    // Clear victory only once the new match is in the cache, not before —
+    // clearing it first left a tick where match and victory were both empty,
+    // and the redirect effect above sent the user back to setup instead of
+    // straight into the fresh match (§2.4/§2.5 promise "immediately").
+    startMatch.mutate(
+      {
+        team1Id: finished.team1Id,
+        team2Id: finished.team2Id,
+        targetPoints: finished.targetPoints,
+      },
+      { onSuccess: () => setVictory(null) },
+    )
   }
 
   if (matchPending) {
@@ -141,6 +148,14 @@ export function PlayScreen({ game }: { game: GameType }) {
         rounds={roundList}
         config={config}
         target={match.target_points}
+        team1Name={team1Name}
+        team2Name={team2Name}
+      />
+
+      <PairTallyRail
+        game={game}
+        team1Id={match.team1_id}
+        team2Id={match.team2_id}
         team1Name={team1Name}
         team2Name={team2Name}
       />
