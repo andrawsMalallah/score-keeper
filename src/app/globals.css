@@ -3,9 +3,12 @@
 /*
  * "Ledger" — the design tokens, matching LEDGER-COLORS.md at the repo root.
  *
- * Warm ink/paper tones rather than neutral gray: a brick accent carries Team 1
- * and primary actions, a felt-green secondary carries Team 2. Dark is the
- * primary theme.
+ * Warm ink/paper tones rather than neutral gray. Three identity colors are
+ * kept deliberately separate: --accent is the app's own brand/action color
+ * (primary buttons, focus rings, success, active tabs) and is NOT tied to
+ * either team; --team1 and --team2 mark team ownership everywhere a team
+ * appears (names, score columns, victory border) and never mean "primary
+ * action". Dark is the primary theme.
  *
  * Themes are driven by a data-theme attribute on <html> rather than the
  * prefers-color-scheme media query alone, because the user's explicit choice
@@ -20,11 +23,13 @@
   --border: oklch(33% 0.02 260); /* borders, dividers — never plain gray */
   --fg: oklch(94% 0.01 85); /* primary text */
   --muted: oklch(66% 0.02 260); /* secondary text */
-  --accent: oklch(68% 0.17 35); /* Team 1 + primary actions — brick */
-  --accent-secondary: oklch(66% 0.1 150); /* Team 2 — felt green */
-  --danger: oklch(58% 0.19 25); /* destructive actions — a darker, redder step off brick */
-  --on-accent: oklch(15% 0.02 35); /* text on the brick accent */
-  --on-accent-secondary: oklch(15% 0.02 150); /* text on the felt accent */
+  --accent: oklch(70% 0.11 200); /* brand/primary actions + success — teal */
+  --team1: oklch(68% 0.17 35); /* Team 1 — brick red */
+  --team2: oklch(66% 0.1 150); /* Team 2 — felt green */
+  --danger: oklch(58% 0.19 25); /* destructive actions — red */
+  --on-accent: oklch(14% 0.02 200); /* text on the teal accent */
+  --on-team1: oklch(15% 0.02 35); /* text on team1 */
+  --on-team2: oklch(15% 0.02 150); /* text on team2 */
 }
 
 :root[data-theme='light'] {
@@ -33,11 +38,13 @@
   --border: oklch(88% 0.015 85);
   --fg: oklch(22% 0.02 260);
   --muted: oklch(46% 0.02 260);
-  --accent: oklch(53% 0.17 35);
-  --accent-secondary: oklch(42% 0.09 150);
+  --accent: oklch(52% 0.1 200);
+  --team1: oklch(53% 0.17 35);
+  --team2: oklch(42% 0.09 150);
   --danger: oklch(46% 0.19 25);
-  --on-accent: oklch(98% 0.01 85);
-  --on-accent-secondary: oklch(98% 0.01 150);
+  --on-accent: oklch(98% 0.01 200);
+  --on-team1: oklch(98% 0.01 85);
+  --on-team2: oklch(98% 0.01 150);
 }
 
 /*
@@ -51,10 +58,12 @@
   --color-fg: var(--fg);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
-  --color-accent-secondary: var(--accent-secondary);
+  --color-team1: var(--team1);
+  --color-team2: var(--team2);
   --color-danger: var(--danger);
   --color-on-accent: var(--on-accent);
-  --color-on-accent-secondary: var(--on-accent-secondary);
+  --color-on-team1: var(--on-team1);
+  --color-on-team2: var(--on-team2);
 
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-familjen), ui-sans-serif, system-ui, sans-serif;
@@ -106,6 +115,23 @@ dialog::backdrop {
 .numerals {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Every number input in the app is scored by typing digits, not by clicking
+ * spinner arrows — the browser-native up/down controls are dead weight on a
+ * touch screen. Removed globally rather than per-component.
+ */
+input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* A single visible focus treatment, the accent color, on everything keyboard-reachable. */

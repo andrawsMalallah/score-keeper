@@ -12,9 +12,9 @@ import {
 } from '@/lib/game/scoring'
 
 /**
- * The thin two-tone strip above the controls (§6.4): the accent from the left,
- * the secondary accent from the right, meeting at the momentum point — a
- * tug-of-war rope rather than a progress bar.
+ * The thin two-tone strip above the controls (§6.4): team1's colour from the
+ * left, team2's from the right, meeting at the momentum point — a tug-of-war
+ * rope rather than a progress bar.
  *
  * Which measure it shows is config-driven: cards has no target, so it shows
  * relative momentum; domino shows progress toward the target.
@@ -45,10 +45,10 @@ export function ProgressBar({
       aria-valuemin={0}
       aria-valuemax={100}
       aria-label={label}
-      className="relative h-1 w-full overflow-hidden rounded-full bg-accent-secondary"
+      className="relative h-1 w-full overflow-hidden rounded-full bg-team2"
     >
       <div
-        className="h-full bg-accent transition-[width] duration-300"
+        className="h-full bg-team1 transition-[width] duration-300"
         style={{ width: `${percent}%` }}
       />
     </div>

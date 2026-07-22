@@ -1,16 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import type { GameConfig } from '@/lib/game/config'
 import type { Round } from '@/hooks/useRounds'
-
-/** Suit glyphs cycle by round number as a small cards garnish (§6.3). */
-const SUIT_GLYPHS = ['♠', '♥', '♦', '♣']
 
 interface RoundRowProps {
   round: Round
   index: number
-  config: GameConfig
   /** Returns false when the edit was rejected, so the row stays open. */
   onEdit: (t1Points: number, t2Points: number) => boolean
   onDelete: () => void
@@ -19,16 +14,11 @@ interface RoundRowProps {
 export function RoundRow({
   round,
   index,
-  config,
   onEdit,
   onDelete,
 }: RoundRowProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [showNote, setShowNote] = useState(false)
-
-  const badge = config.usesRoundTypes
-    ? SUIT_GLYPHS[index % SUIT_GLYPHS.length]
-    : '🁣'
 
   if (isEditing) {
     return (
@@ -46,12 +36,7 @@ export function RoundRow({
   return (
     <>
       <tr className="border-b border-fg/10">
-        <td className="py-1.5">
-          <span className="numerals text-xs opacity-50" aria-hidden="true">
-            {badge}
-          </span>
-          <span className="sr-only">Round {index + 1}</span>
-        </td>
+        <td className="numerals py-1.5 text-xs opacity-50">{index + 1}</td>
 
         <td className="numerals py-1.5 text-center text-[15px]">
           {round.t1_points}
@@ -147,6 +132,7 @@ function EditRow({
           autoFocus
           onFocus={(event) => event.target.select()}
           type="number"
+          inputMode="numeric"
           value={t1}
           onChange={(event) => setT1(event.target.value)}
           onKeyDown={onKeyDown}
@@ -161,6 +147,7 @@ function EditRow({
         <input
           id={`edit-t2-${round.id}`}
           type="number"
+          inputMode="numeric"
           value={t2}
           onChange={(event) => setT2(event.target.value)}
           onKeyDown={onKeyDown}

@@ -43,6 +43,7 @@ export function PlayScreen({ game }: { game: GameType }) {
   const startMatch = useStartMatch(game)
 
   const [confirmEnd, setConfirmEnd] = useState(false)
+  const [confirmDeclare, setConfirmDeclare] = useState(false)
   const [victory, setVictory] = useState<VictoryData | null>(null)
 
   // No live match means the user reloaded after finishing or abandoning one;
@@ -78,14 +79,27 @@ export function PlayScreen({ game }: { game: GameType }) {
   const canDeclare =
     !!match && canDeclareWinner(roundList, config, match.target_points)
 
-  function handleDeclareWinner() {
+  const declareLeader = leadingSlot(totals, config)
+  const declareWinnerName =
+    declareLeader === 'team1'
+      ? team1Name
+      : declareLeader === 'team2'
+        ? team2Name
+        : null
+
+  function handleDeclareWinnerRequest() {
     if (!match) return
-    const leader = leadingSlot(totals, config)
-    if (leader === null) {
+    if (declareLeader === null) {
       toast.error('Scores are tied — cannot declare a winner yet.')
       return
     }
+    setConfirmDeclare(true)
+  }
 
+  function handleDeclareWinner() {
+    if (!match || declareLeader === null) return
+
+    const leader = declareLeader
     const winnerTeamId = leader === 'team1' ? match.team1_id : match.team2_id
     const winnerName = leader === 'team1' ? team1Name : team2Name
 
@@ -96,7 +110,7 @@ export function PlayScreen({ game }: { game: GameType }) {
           vibrate('victory')
           setVictory({
             winnerName,
-            winnerAccent: leader === 'team1' ? 'accent' : 'accent-secondary',
+            winnerTeam: leader,
             rounds: roundList.length,
             totalScore: leaderTotal(totals, config),
             margin: margin(totals),
@@ -127,9 +141,9 @@ export function PlayScreen({ game }: { game: GameType }) {
         <>
           <div className="flex items-center justify-between gap-3">
             <h1 className="font-display text-[22px] font-bold text-fg">
-              <span className="text-accent">{team1Name}</span>
+              <span className="text-team1">{team1Name}</span>
               <span className="mx-2 text-muted">vs</span>
-              <span className="text-accent-secondary">{team2Name}</span>
+              <span className="text-team2">{team2Name}</span>
             </h1>
 
             <Button variant="ghost" onClick={() => setConfirmEnd(true)}>
@@ -173,7 +187,7 @@ export function PlayScreen({ game }: { game: GameType }) {
             team1Name={team1Name}
             team2Name={team2Name}
             canDeclare={canDeclare}
-            onDeclareWinner={handleDeclareWinner}
+            onDeclareWinner={handleDeclareWinnerRequest}
           />
 
           <ConfirmDialog
@@ -187,6 +201,22 @@ export function PlayScreen({ game }: { game: GameType }) {
               abandonMatch.mutate(match.id)
               setConfirmEnd(false)
               router.replace(`/${game}`)
+            }}
+          />
+
+          <ConfirmDialog
+            open={confirmDeclare}
+            title="Declare a winner?"
+            body={
+              declareWinnerName
+                ? `${declareWinnerName} wins the match. The match is archived to history and cannot be edited afterward.`
+                : 'The match is archived to history and cannot be edited afterward.'
+            }
+            confirmLabel="Declare winner"
+            onCancel={() => setConfirmDeclare(false)}
+            onConfirm={() => {
+              setConfirmDeclare(false)
+              handleDeclareWinner()
             }}
           />
         </>

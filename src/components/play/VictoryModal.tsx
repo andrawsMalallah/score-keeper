@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button'
 
 export interface VictoryData {
   winnerName: string
-  winnerAccent: 'accent' | 'accent-secondary'
+  winnerTeam: 'team1' | 'team2'
   rounds: number
   totalScore: number
   margin: number
@@ -23,9 +23,9 @@ interface VictoryModalProps {
   onEndGame: () => void
 }
 
-const ACCENT_BORDER: Record<VictoryData['winnerAccent'], string> = {
-  accent: 'border-accent',
-  'accent-secondary': 'border-accent-secondary',
+const TEAM_BORDER: Record<VictoryData['winnerTeam'], string> = {
+  team1: 'border-team1',
+  team2: 'border-team2',
 }
 
 /**
@@ -50,7 +50,7 @@ export function VictoryModal({ data, onRematch, onEndGame }: VictoryModalProps) 
     <dialog
       ref={dialogRef}
       aria-labelledby="victory-modal-title"
-      className={`w-full max-w-sm rounded-xl border-2 ${ACCENT_BORDER[data.winnerAccent]} bg-surface p-6 text-center text-fg motion-safe:open:animate-[victory-scale-in_240ms_ease-out] backdrop:bg-black/70`}
+      className={`w-full max-w-sm rounded-xl border-2 ${TEAM_BORDER[data.winnerTeam]} bg-surface p-6 text-center text-fg motion-safe:open:animate-[victory-scale-in_240ms_ease-out] backdrop:bg-black/70`}
     >
       <p className="text-4xl" aria-hidden="true">
         🏆

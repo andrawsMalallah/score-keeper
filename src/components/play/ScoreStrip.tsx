@@ -59,7 +59,7 @@ export function ScoreStrip({
   }
 
   return (
-    <div className="mx-auto w-full max-w-[560px]">
+    <div className="w-full">
       {/* The torn top edge of the strip. */}
       <div
         aria-hidden="true"
@@ -112,7 +112,6 @@ export function ScoreStrip({
                   key={round.id}
                   round={round}
                   index={index}
-                  config={config}
                   onEdit={(t1, t2) => handleEdit(round, t1, t2)}
                   onDelete={() => setPendingDelete(round)}
                 />

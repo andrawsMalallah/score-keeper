@@ -122,13 +122,13 @@ export function RoundForm({
           <WinnerButton
             name={team1Name}
             selected={winner === 'team1'}
-            accent="accent"
+            team="team1"
             onClick={() => selectWinner('team1')}
           />
           <WinnerButton
             name={team2Name}
             selected={winner === 'team2'}
-            accent="accent-secondary"
+            team="team2"
             onClick={() => selectWinner('team2')}
           />
         </div>
@@ -212,7 +212,7 @@ export function RoundForm({
           Add round
         </Button>
         <Button
-          variant="accent-secondary"
+          variant="team2"
           disabled={!canDeclare}
           onClick={onDeclareWinner}
         >
@@ -226,18 +226,18 @@ export function RoundForm({
 function WinnerButton({
   name,
   selected,
-  accent,
+  team,
   onClick,
 }: {
   name: string
   selected: boolean
-  accent: 'accent' | 'accent-secondary'
+  team: 'team1' | 'team2'
   onClick: () => void
 }) {
   const selectedStyle =
-    accent === 'accent'
-      ? 'border-accent bg-accent text-on-accent'
-      : 'border-accent-secondary bg-accent-secondary text-on-accent-secondary'
+    team === 'team1'
+      ? 'border-team1 bg-team1 text-on-team1'
+      : 'border-team2 bg-team2 text-on-team2'
 
   return (
     <button

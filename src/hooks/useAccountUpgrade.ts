@@ -50,3 +50,38 @@ export function useUpgradeAccount() {
     },
   })
 }
+
+/**
+ * Signs into an *existing* permanent account from a fresh browser/device —
+ * the counterpart to useUpgradeAccount, which only ever links an email to
+ * the current anonymous session. `shouldCreateUser: false` is deliberate:
+ * without it, signInWithOtp silently creates a brand-new account for an
+ * unrecognized email instead of failing, which would let a typo look like a
+ * successful sign-in. This replaces the current session (anonymous or not)
+ * rather than merging into it — any data under the previous session's user
+ * id is not moved, which is why the UI warns before calling this when the
+ * current session still has local-only data.
+ */
+export function useSignIn() {
+  return useMutation({
+    mutationFn: async (email: string) => {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: false,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
+      if (error) throw error
+    },
+
+    onSuccess: () => {
+      toast.success('Check your email for a sign-in link.')
+    },
+
+    onError: (error) => {
+      toast.error(`Could not sign in. ${error.message}`)
+    },
+  })
+}

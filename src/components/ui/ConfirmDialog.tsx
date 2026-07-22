@@ -79,7 +79,7 @@ export function ConfirmDialog({
       <p className="mt-2 text-sm text-muted">{body}</p>
 
       <div className="mt-5 flex justify-end gap-2">
-        <Button variant="ghost" onClick={onCancel}>
+        <Button variant="secondary" onClick={onCancel}>
           Cancel
         </Button>
         <Button

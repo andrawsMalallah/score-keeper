@@ -54,12 +54,12 @@ export function PairTallyRail({
       <div className="mt-3 grid grid-cols-2 divide-x divide-border">
         <TallyColumn
           name={team1Name}
-          accentClass="text-accent"
+          accentClass="text-team1"
           scores={team1Scores}
         />
         <TallyColumn
           name={team2Name}
-          accentClass="text-accent-secondary"
+          accentClass="text-team2"
           scores={team2Scores}
         />
       </div>

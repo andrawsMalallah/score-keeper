@@ -151,8 +151,8 @@ export function useAbandonMatch(game: GameType) {
  * Keeps a live match in sync across devices (§4.2): subscribes to Postgres
  * changes on this match's row and its rounds, and invalidates the matching
  * query keys so the existing fetchers/optimistic-update logic just re-run.
- * Requires Realtime replication enabled on `rounds`/`matches` — see
- * supabase/migrations/0003_realtime.sql.
+ * Requires Realtime replication enabled on `rounds`/`matches` — see the
+ * `alter publication supabase_realtime` lines in supabase/migrations/0001_init.sql.
  */
 export function useRealtimeMatch(game: GameType, matchId: string | undefined) {
   const queryClient = useQueryClient()

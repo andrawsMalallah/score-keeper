@@ -5,13 +5,13 @@ import { useUiStore } from '@/stores/ui'
 import { useTeams } from '@/hooks/useTeams'
 
 /**
- * The two staged team positions. The accent marks Team 1 and the secondary
- * accent marks Team 2 everywhere they appear, so a glance at a colour
- * identifies the side without reading the label.
+ * The two staged team positions. team1's colour marks Team 1 and team2's
+ * marks Team 2 everywhere they appear, so a glance at a colour identifies
+ * the side without reading the label.
  */
 const SLOT_STYLES = [
-  { badge: 'Team 1', accent: 'border-accent/50', text: 'text-accent' },
-  { badge: 'Team 2', accent: 'border-accent-secondary/50', text: 'text-accent-secondary' },
+  { badge: 'Team 1', accent: 'border-team1/50', text: 'text-team1' },
+  { badge: 'Team 2', accent: 'border-team2/50', text: 'text-team2' },
 ] as const
 
 export function TeamSlots({ game }: { game: GameType }) {

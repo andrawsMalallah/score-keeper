@@ -153,9 +153,9 @@ function TeamCard({
 }: TeamCardProps) {
   const assignedStyle =
     slotIndex === 0
-      ? 'border-accent bg-accent/10'
+      ? 'border-team1 bg-team1/10'
       : slotIndex === 1
-        ? 'border-accent-secondary bg-accent-secondary/10'
+        ? 'border-team2 bg-team2/10'
         : 'border-border bg-bg'
 
   if (isEditing) {

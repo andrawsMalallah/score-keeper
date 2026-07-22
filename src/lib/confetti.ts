@@ -4,7 +4,7 @@
  * rather than a dependency — it is one canvas and one rAF loop.
  */
 
-const COLORS = ['--accent', '--accent-secondary', '--fg'] as const
+const COLORS = ['--team1', '--team2', '--fg'] as const
 const DURATION_MS = 3000
 const PARTICLES_PER_CANNON = 60
 const GRAVITY = 0.35

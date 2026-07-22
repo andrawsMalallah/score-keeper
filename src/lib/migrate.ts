@@ -8,7 +8,7 @@
  *  - "current": the shape this app exports, already normalized.
  *
  * Both parse down to an ImportPayload, the exact shape import_backup(jsonb)
- * (supabase/migrations/0002_import_backup.sql) expects. Teams are addressed
+ * (supabase/migrations/0001_init.sql) expects. Teams are addressed
  * by a caller-chosen `ref` string rather than a real id, because legacy data
  * has no ids at all (teams were just name strings) and even the current
  * export format shouldn't leak this account's ids into a file that might be
