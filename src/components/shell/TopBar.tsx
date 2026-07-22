@@ -19,7 +19,7 @@ export function TopBar({ activeGame, matchInProgress = false }: TopBarProps) {
 
   return (
     <header className="border-b border-border">
-      <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3">
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
         <div className="flex items-center gap-2">
           <span className="font-display text-lg font-extrabold tracking-tight text-fg">
             Score Keeper
@@ -33,7 +33,7 @@ export function TopBar({ activeGame, matchInProgress = false }: TopBarProps) {
           )}
         </div>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex flex-wrap items-center gap-2">
           {!matchInProgress && <GameTabs activeGame={activeGame} />}
           <ImportExport />
           <AccountUpgrade />
