@@ -15,6 +15,7 @@ import {
   useAbandonMatch,
   useActiveMatch,
   useDeclareWinner,
+  useRealtimeMatch,
   useStartMatch,
 } from '@/hooks/useMatch'
 import { useRounds } from '@/hooks/useRounds'
@@ -36,6 +37,7 @@ export function PlayScreen({ game }: { game: GameType }) {
   const { data: match, isPending: matchPending } = useActiveMatch(game)
   const { data: rounds } = useRounds(match?.id)
   const { data: teams } = useTeams(game)
+  useRealtimeMatch(game, match?.id)
   const abandonMatch = useAbandonMatch(game)
   const declareWinner = useDeclareWinner(game)
   const startMatch = useStartMatch(game)

@@ -1,5 +1,6 @@
 import { GAME_CONFIGS } from '@/lib/game/config'
 import type { GameType } from '@/lib/supabase/types'
+import { AccountUpgrade } from './AccountUpgrade'
 import { GameTabs } from './GameTabs'
 import { ImportExport } from './ImportExport'
 import { ThemeToggle } from './ThemeToggle'
@@ -35,6 +36,7 @@ export function TopBar({ activeGame, matchInProgress = false }: TopBarProps) {
         <div className="ml-auto flex items-center gap-2">
           {!matchInProgress && <GameTabs activeGame={activeGame} />}
           <ImportExport />
+          <AccountUpgrade />
           <ThemeToggle />
         </div>
       </div>

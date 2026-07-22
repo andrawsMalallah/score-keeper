@@ -1,9 +1,11 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import type { Database, GameType } from '@/lib/supabase/types'
 import { toast } from '@/stores/toasts'
+import { roundsKey } from './useRounds'
 
 export type Match = Database['public']['Tables']['matches']['Row']
 
@@ -143,4 +145,38 @@ export function useAbandonMatch(game: GameType) {
       toast.error(`Could not end the match. ${error.message}`)
     },
   })
+}
+
+/**
+ * Keeps a live match in sync across devices (§4.2): subscribes to Postgres
+ * changes on this match's row and its rounds, and invalidates the matching
+ * query keys so the existing fetchers/optimistic-update logic just re-run.
+ * Requires Realtime replication enabled on `rounds`/`matches` — see
+ * supabase/migrations/0003_realtime.sql.
+ */
+export function useRealtimeMatch(game: GameType, matchId: string | undefined) {
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    if (!matchId) return
+
+    const supabase = createClient()
+    const channel = supabase
+      .channel(`match-${matchId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'rounds', filter: `match_id=eq.${matchId}` },
+        () => queryClient.invalidateQueries({ queryKey: roundsKey(matchId) }),
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'matches', filter: `id=eq.${matchId}` },
+        () => queryClient.invalidateQueries({ queryKey: activeMatchKey(game) }),
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [game, matchId, queryClient])
 }
