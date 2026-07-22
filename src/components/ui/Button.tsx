@@ -3,15 +3,19 @@
 import type { ButtonHTMLAttributes } from 'react'
 import { vibrate } from '@/lib/haptics'
 
-type Variant = 'primary' | 'secondary' | 'danger' | 'ghost'
+type Variant = 'primary' | 'secondary' | 'accent-secondary' | 'danger' | 'ghost'
 
 /**
  * The accent (brick) is the primary action colour and doubles as success —
- * the app has no separate success tone.
+ * the app has no separate success tone. accent-secondary (felt) is reserved
+ * for actions that need to stand apart from a primary button placed right
+ * next to them, e.g. "Declare a Winner" beside "Add round".
  */
 const VARIANTS: Record<Variant, string> = {
   primary: 'bg-accent text-on-accent hover:opacity-90 font-semibold',
   secondary: 'border border-border bg-surface text-fg hover:border-muted',
+  'accent-secondary':
+    'bg-accent-secondary text-on-accent-secondary hover:opacity-90 font-semibold',
   danger: 'border border-danger text-danger hover:bg-danger hover:text-on-accent',
   ghost: 'text-muted hover:text-fg',
 }

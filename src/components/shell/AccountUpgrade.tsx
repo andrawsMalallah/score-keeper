@@ -40,7 +40,7 @@ function UpgradeRedirectResult() {
  * TopBar rather than scoped to setup screens like ImportExport, since saving
  * an account isn't game- or screen-specific.
  */
-export function AccountUpgrade() {
+export function AccountUpgrade({ onAction }: { onAction?: () => void } = {}) {
   const { data: isAnonymous } = useIsAnonymous()
   const upgrade = useUpgradeAccount()
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -72,7 +72,15 @@ export function AccountUpgrade() {
       </Suspense>
 
       {isAnonymous && (
-        <Button variant="ghost" onClick={() => setOpen(true)}>
+        <Button
+          variant="ghost"
+          className="w-full text-left"
+          role="menuitem"
+          onClick={() => {
+            setOpen(true)
+            onAction?.()
+          }}
+        >
           Save your data
         </Button>
       )}

@@ -6,7 +6,9 @@ import { rankBadge } from '@/lib/game/tallies'
 import { useLeaderboard } from '@/hooks/useLeaderboard'
 import { Button } from '@/components/ui/Button'
 
-/** Standings for a game (§2.7): collapsed to the top team until expanded. */
+const PREVIEW_COUNT = 3
+
+/** Standings for a game (§2.7): collapsed to the top three teams until expanded. */
 export function Leaderboard({ game }: { game: GameType }) {
   const { data: rows, isPending } = useLeaderboard(game)
   const [showAll, setShowAll] = useState(false)
@@ -23,7 +25,7 @@ export function Leaderboard({ game }: { game: GameType }) {
     )
   }
 
-  const visible = showAll ? rows : rows.slice(0, 1)
+  const visible = showAll ? rows : rows.slice(0, PREVIEW_COUNT)
 
   return (
     <div className="space-y-3">
@@ -52,9 +54,9 @@ export function Leaderboard({ game }: { game: GameType }) {
         ))}
       </ul>
 
-      {rows.length > 1 && (
+      {rows.length > PREVIEW_COUNT && (
         <Button variant="ghost" onClick={() => setShowAll((value) => !value)}>
-          {showAll ? 'Show Top 1' : 'Show All'}
+          {showAll ? `Show Top ${PREVIEW_COUNT}` : 'Show All'}
         </Button>
       )}
     </div>

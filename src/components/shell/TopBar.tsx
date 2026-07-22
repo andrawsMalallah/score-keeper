@@ -1,8 +1,7 @@
 import { GAME_CONFIGS } from '@/lib/game/config'
 import type { GameType } from '@/lib/supabase/types'
-import { AccountUpgrade } from './AccountUpgrade'
 import { GameTabs } from './GameTabs'
-import { ImportExport } from './ImportExport'
+import { MoreMenu } from './MoreMenu'
 import { ThemeToggle } from './ThemeToggle'
 
 interface TopBarProps {
@@ -19,9 +18,9 @@ export function TopBar({ activeGame, matchInProgress = false }: TopBarProps) {
 
   return (
     <header className="border-b border-border">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
+      <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-3 gap-y-2 px-3 py-3 sm:px-4">
         <div className="flex items-center gap-2">
-          <span className="font-display text-lg font-extrabold tracking-tight text-fg">
+          <span className="font-display text-base font-extrabold tracking-tight text-fg sm:text-lg">
             Score Keeper
           </span>
 
@@ -35,9 +34,8 @@ export function TopBar({ activeGame, matchInProgress = false }: TopBarProps) {
 
         <div className="ml-auto flex flex-wrap items-center gap-2">
           {!matchInProgress && <GameTabs activeGame={activeGame} />}
-          <ImportExport />
-          <AccountUpgrade />
           <ThemeToggle />
+          <MoreMenu />
         </div>
       </div>
     </header>

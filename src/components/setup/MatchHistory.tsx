@@ -103,7 +103,13 @@ function HistoryRow({
       </div>
       <div className="mt-1 flex items-center justify-between gap-2 text-xs text-muted">
         <span className="numerals">
-          {totals.team1} — {totals.team2}
+          <span className={match.winner_team_id === match.team1_id ? 'font-bold text-fg' : ''}>
+            {totals.team1}
+          </span>
+          {' — '}
+          <span className={match.winner_team_id === match.team2_id ? 'font-bold text-fg' : ''}>
+            {totals.team2}
+          </span>
         </span>
         <span>
           Margin {margin(totals)} · {roundCount} round

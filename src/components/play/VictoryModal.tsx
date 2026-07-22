@@ -19,7 +19,8 @@ export interface VictoryData {
 
 interface VictoryModalProps {
   data: VictoryData | null
-  onStartNewMatch: () => void
+  onRematch: () => void
+  onEndGame: () => void
 }
 
 const ACCENT_BORDER: Record<VictoryData['winnerAccent'], string> = {
@@ -32,7 +33,7 @@ const ACCENT_BORDER: Record<VictoryData['winnerAccent'], string> = {
  * `data` is captured by the caller at declare time so the modal keeps showing
  * the finished match's numbers even after the active-match query flips to null.
  */
-export function VictoryModal({ data, onStartNewMatch }: VictoryModalProps) {
+export function VictoryModal({ data, onRematch, onEndGame }: VictoryModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
@@ -71,16 +72,26 @@ export function VictoryModal({ data, onStartNewMatch }: VictoryModalProps) {
         <StatBox label="Margin" value={data.margin} />
       </div>
 
-      <Button
-        variant="primary"
-        className="mt-6 w-full"
-        onClick={() => {
-          dialogRef.current?.close()
-          onStartNewMatch()
-        }}
-      >
-        Start New Match
-      </Button>
+      <div className="mt-6 grid grid-cols-2 gap-2">
+        <Button
+          variant="secondary"
+          onClick={() => {
+            dialogRef.current?.close()
+            onEndGame()
+          }}
+        >
+          End Game
+        </Button>
+        <Button
+          variant="primary"
+          onClick={() => {
+            dialogRef.current?.close()
+            onRematch()
+          }}
+        >
+          Rematch
+        </Button>
+      </div>
     </dialog>
   )
 }

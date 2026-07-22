@@ -13,7 +13,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
  * route-awareness has to happen client-side via the pathname rather than a
  * prop threaded down from the layout.
  */
-export function ImportExport() {
+export function ImportExport({ onAction }: { onAction?: () => void } = {}) {
   const pathname = usePathname()
   const exportBackup = useExportBackup()
   const importBackup = useImportBackup()
@@ -24,15 +24,25 @@ export function ImportExport() {
   if (!isSetupScreen) return null
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex flex-col gap-1" role="none">
       <Button
         variant="ghost"
-        onClick={() => exportBackup.mutate()}
+        className="w-full text-left"
+        role="menuitem"
+        onClick={() => {
+          exportBackup.mutate()
+          onAction?.()
+        }}
         disabled={exportBackup.isPending}
       >
         Export
       </Button>
-      <Button variant="ghost" onClick={() => fileInputRef.current?.click()}>
+      <Button
+        variant="ghost"
+        className="w-full text-left"
+        role="menuitem"
+        onClick={() => fileInputRef.current?.click()}
+      >
         Import
       </Button>
       <input

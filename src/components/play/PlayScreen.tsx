@@ -53,7 +53,7 @@ export function PlayScreen({ game }: { game: GameType }) {
     if (!matchPending && !match && !victory) router.replace(`/${game}`)
   }, [matchPending, match, victory, router, game])
 
-  function startNewMatch(finished: VictoryData) {
+  function startRematch(finished: VictoryData) {
     // Clear victory only once the new match is in the cache, not before —
     // clearing it first left a tick where match and victory were both empty,
     // and the redirect effect above sent the user back to setup instead of
@@ -68,24 +68,15 @@ export function PlayScreen({ game }: { game: GameType }) {
     )
   }
 
-  if (matchPending) {
-    return <p className="text-sm text-muted">Loading match…</p>
-  }
-
-  if (!match) {
-    return victory ? (
-      <VictoryModal data={victory} onStartNewMatch={() => startNewMatch(victory)} />
-    ) : null
-  }
-
   const teamName = (id: string) =>
     teams?.find((team) => team.id === id)?.name ?? '—'
-  const team1Name = teamName(match.team1_id)
-  const team2Name = teamName(match.team2_id)
+  const team1Name = match ? teamName(match.team1_id) : ''
+  const team2Name = match ? teamName(match.team2_id) : ''
 
   const roundList = rounds ?? []
   const totals = sumTotals(roundList)
-  const canDeclare = canDeclareWinner(roundList, config, match.target_points)
+  const canDeclare =
+    !!match && canDeclareWinner(roundList, config, match.target_points)
 
   function handleDeclareWinner() {
     if (!match) return
@@ -118,83 +109,93 @@ export function PlayScreen({ game }: { game: GameType }) {
     )
   }
 
+  // VictoryModal is rendered from this single JSX position regardless of
+  // matchPending/match state (see the ternary below), rather than from
+  // separate return statements per branch. Declaring a winner clears the
+  // active match before this component re-renders with the fresh `victory`
+  // state, so `match` briefly disappears while `victory` is still in flight.
+  // If VictoryModal were rendered from two different call sites (one per
+  // early-return branch) React would remount the underlying <dialog> when
+  // switching between them, which silently closes it before the player sees
+  // it — that was the original bug. Keeping one call site at a fixed tree
+  // position keeps the same element identity across every state combination.
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="font-display text-[22px] font-bold text-fg">
-          <span className="text-accent">{team1Name}</span>
-          <span className="mx-2 text-muted">vs</span>
-          <span className="text-accent-secondary">{team2Name}</span>
-        </h1>
+      {matchPending ? (
+        <p className="text-sm text-muted">Loading match…</p>
+      ) : match ? (
+        <>
+          <div className="flex items-center justify-between gap-3">
+            <h1 className="font-display text-[22px] font-bold text-fg">
+              <span className="text-accent">{team1Name}</span>
+              <span className="mx-2 text-muted">vs</span>
+              <span className="text-accent-secondary">{team2Name}</span>
+            </h1>
 
-        <Button variant="ghost" onClick={() => setConfirmEnd(true)}>
-          End game
-        </Button>
-      </div>
+            <Button variant="ghost" onClick={() => setConfirmEnd(true)}>
+              End game
+            </Button>
+          </div>
 
-      <ProgressBar
-        totals={totals}
-        config={config}
-        target={match.target_points}
-      />
+          <ProgressBar
+            totals={totals}
+            config={config}
+            target={match.target_points}
+          />
 
-      <ScoreStrip
-        match={match}
-        rounds={roundList}
-        config={config}
-        team1Name={team1Name}
-        team2Name={team2Name}
-      />
+          <ScoreStrip
+            match={match}
+            rounds={roundList}
+            config={config}
+            team1Name={team1Name}
+            team2Name={team2Name}
+          />
 
-      <TotalsFooter
-        rounds={roundList}
-        config={config}
-        target={match.target_points}
-        team1Name={team1Name}
-        team2Name={team2Name}
-      />
+          <TotalsFooter
+            rounds={roundList}
+            config={config}
+            target={match.target_points}
+            team1Name={team1Name}
+            team2Name={team2Name}
+          />
 
-      <PairTallyRail
-        game={game}
-        team1Id={match.team1_id}
-        team2Id={match.team2_id}
-        team1Name={team1Name}
-        team2Name={team2Name}
-      />
+          <PairTallyRail
+            game={game}
+            team1Id={match.team1_id}
+            team2Id={match.team2_id}
+            team1Name={team1Name}
+            team2Name={team2Name}
+          />
 
-      <RoundForm
-        match={match}
-        config={config}
-        team1Name={team1Name}
-        team2Name={team2Name}
-      />
+          <RoundForm
+            match={match}
+            config={config}
+            team1Name={team1Name}
+            team2Name={team2Name}
+            canDeclare={canDeclare}
+            onDeclareWinner={handleDeclareWinner}
+          />
 
-      <Button
-        variant="primary"
-        className="w-full"
-        disabled={!canDeclare}
-        onClick={handleDeclareWinner}
-      >
-        Declare a Winner
-      </Button>
-
-      <ConfirmDialog
-        open={confirmEnd}
-        title="End this game?"
-        body="The match is discarded without being saved to history. Tallies and the leaderboard are unaffected."
-        confirmLabel="End game"
-        destructive
-        onCancel={() => setConfirmEnd(false)}
-        onConfirm={() => {
-          abandonMatch.mutate(match.id)
-          setConfirmEnd(false)
-          router.replace(`/${game}`)
-        }}
-      />
+          <ConfirmDialog
+            open={confirmEnd}
+            title="End this game?"
+            body="The match is discarded without being saved to history. Tallies and the leaderboard are unaffected."
+            confirmLabel="End game"
+            destructive
+            onCancel={() => setConfirmEnd(false)}
+            onConfirm={() => {
+              abandonMatch.mutate(match.id)
+              setConfirmEnd(false)
+              router.replace(`/${game}`)
+            }}
+          />
+        </>
+      ) : null}
 
       <VictoryModal
         data={victory}
-        onStartNewMatch={() => victory && startNewMatch(victory)}
+        onRematch={() => victory && startRematch(victory)}
+        onEndGame={() => setVictory(null)}
       />
     </div>
   )

@@ -24,7 +24,7 @@ export default async function GameLayout({
   return (
     <>
       <TopBar activeGame={game} />
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+      <main className="mx-auto w-full max-w-3xl flex-1 px-3 py-4 sm:px-4 sm:py-6">
         {children}
       </main>
     </>

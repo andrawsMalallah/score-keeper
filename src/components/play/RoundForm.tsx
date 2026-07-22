@@ -16,6 +16,8 @@ interface RoundFormProps {
   config: GameConfig
   team1Name: string
   team2Name: string
+  canDeclare: boolean
+  onDeclareWinner: () => void
 }
 
 /**
@@ -28,6 +30,8 @@ export function RoundForm({
   config,
   team1Name,
   team2Name,
+  canDeclare,
+  onDeclareWinner,
 }: RoundFormProps) {
   const addRound = useAddRound()
   const { data: roundTypes } = useRoundTypes()
@@ -203,9 +207,18 @@ export function RoundForm({
         </div>
       </div>
 
-      <Button variant="primary" onClick={handleSubmit} className="w-full">
-        Add round
-      </Button>
+      <div className="grid grid-cols-2 gap-2">
+        <Button variant="primary" onClick={handleSubmit}>
+          Add round
+        </Button>
+        <Button
+          variant="accent-secondary"
+          disabled={!canDeclare}
+          onClick={onDeclareWinner}
+        >
+          Declare a Winner
+        </Button>
+      </div>
     </div>
   )
 }

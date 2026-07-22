@@ -69,6 +69,37 @@ body {
 }
 
 /*
+ * Theme switch fades rather than snaps. Scoped to the tokens themselves
+ * (not a blanket `transition: all`) so unrelated layout/animation isn't
+ * slowed down.
+ */
+body,
+.themed-surface {
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+/*
+ * All three modals (ConfirmDialog, VictoryModal, AccountUpgrade) are native
+ * <dialog> elements with no shared wrapper, so positioning is set here once
+ * rather than tripled per component. Anchored near the top of the viewport
+ * with breathing room above, instead of the browser's default vertical
+ * centering, so the modal doesn't sit under the on-screen keyboard on mobile
+ * and doesn't jump around as its content height changes.
+ */
+dialog {
+  margin-top: max(4rem, 8vh);
+  margin-inline: auto;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+dialog::backdrop {
+  transition: background-color 160ms ease;
+}
+
+/*
  * Scores are the hero content. Tabular figures keep score columns from
  * wobbling as digits change — non-negotiable for every number in the app.
  */
@@ -93,6 +124,18 @@ body {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* Small pop for the TopBar overflow menu. */
+@keyframes menu-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 

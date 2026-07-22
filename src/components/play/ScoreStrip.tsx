@@ -76,21 +76,21 @@ export function ScoreStrip({
         }}
       />
 
-      <div className="bg-surface px-3 pb-3 text-fg shadow-lg">
+      <div className="bg-surface px-4 pb-3 text-fg shadow-lg sm:px-5">
         <table className="w-full table-fixed border-collapse">
           <caption className="sr-only">
             Rounds for {team1Name} against {team2Name}
           </caption>
           <thead>
             <tr className="border-b border-fg/20">
-              <th scope="col" className="w-10 py-2 text-left text-[11px] font-semibold tracking-wide uppercase opacity-60">
+              <th scope="col" className="w-8 py-2 text-left text-[11px] font-semibold tracking-wide uppercase opacity-60">
                 #
               </th>
-              <th scope="col" className="py-2 text-right text-[11px] font-semibold tracking-wide uppercase opacity-60">
+              <th scope="col" className="py-2 text-center text-[11px] font-semibold tracking-wide uppercase opacity-60">
                 {team1Name}
               </th>
               <th scope="col" className="w-4" aria-hidden="true" />
-              <th scope="col" className="py-2 text-left text-[11px] font-semibold tracking-wide uppercase opacity-60">
+              <th scope="col" className="py-2 text-center text-[11px] font-semibold tracking-wide uppercase opacity-60">
                 {team2Name}
               </th>
               <th scope="col" className="w-16">
@@ -127,13 +127,13 @@ export function ScoreStrip({
                   Total
                 </th>
                 <td
-                  className={`numerals py-2 text-right text-[28px] leading-none ${leader === 'team1' ? 'font-bold' : 'opacity-70'}`}
+                  className={`numerals py-2 text-center text-[28px] leading-none ${leader === 'team1' ? 'font-bold' : 'opacity-70'}`}
                 >
                   {totals.team1}
                 </td>
                 <td aria-hidden="true" />
                 <td
-                  className={`numerals py-2 text-left text-[28px] leading-none ${leader === 'team2' ? 'font-bold' : 'opacity-70'}`}
+                  className={`numerals py-2 text-center text-[28px] leading-none ${leader === 'team2' ? 'font-bold' : 'opacity-70'}`}
                 >
                   {totals.team2}
                 </td>

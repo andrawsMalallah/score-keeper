@@ -53,12 +53,12 @@ export function RoundRow({
           <span className="sr-only">Round {index + 1}</span>
         </td>
 
-        <td className="numerals py-1.5 text-right text-[15px]">
+        <td className="numerals py-1.5 text-center text-[15px]">
           {round.t1_points}
         </td>
         {/* The hand-ruled centre divider between the two team columns. */}
         <td aria-hidden="true" className="border-l border-fg/20" />
-        <td className="numerals py-1.5 text-left text-[15px]">
+        <td className="numerals py-1.5 text-center text-[15px]">
           {round.t2_points}
         </td>
 
@@ -150,7 +150,7 @@ function EditRow({
           value={t1}
           onChange={(event) => setT1(event.target.value)}
           onKeyDown={onKeyDown}
-          className="numerals w-full rounded border border-fg/30 bg-bg px-1 py-0.5 text-right text-[15px]"
+          className="numerals w-full rounded border border-fg/30 bg-bg px-1 py-0.5 text-center text-[15px]"
         />
       </td>
       <td aria-hidden="true" className="border-l border-fg/20" />
@@ -164,7 +164,7 @@ function EditRow({
           value={t2}
           onChange={(event) => setT2(event.target.value)}
           onKeyDown={onKeyDown}
-          className="numerals w-full rounded border border-fg/30 bg-bg px-1 py-0.5 text-[15px]"
+          className="numerals w-full rounded border border-fg/30 bg-bg px-1 py-0.5 text-center text-[15px]"
         />
       </td>
 
