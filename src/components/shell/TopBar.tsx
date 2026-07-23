@@ -18,9 +18,9 @@ export function TopBar({ activeGame, matchInProgress = false }: TopBarProps) {
 
   return (
     <header className="border-b border-border">
-      <div className="mx-auto flex max-w-3xl items-center gap-x-2 px-2 py-2 sm:flex-wrap sm:gap-x-3 sm:gap-y-2 sm:px-4 sm:py-3">
+      <div className="mx-auto flex max-w-3xl items-center gap-x-2 px-2 py-3 sm:flex-wrap sm:gap-x-3 sm:gap-y-2 sm:px-4 sm:py-4">
         <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
-          <span className="truncate font-display text-sm font-extrabold tracking-tight text-fg sm:text-base md:text-lg">
+          <span className="truncate font-display text-base font-extrabold tracking-tight text-fg sm:text-lg">
             Score Keeper
           </span>
 

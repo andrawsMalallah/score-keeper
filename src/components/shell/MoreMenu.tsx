@@ -44,7 +44,7 @@ export function MoreMenu() {
         aria-label="More options"
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex size-[34px] items-center justify-center rounded-full border border-border bg-surface text-sm text-muted transition-colors hover:text-fg"
+        className="flex size-[30px] items-center justify-center rounded-full border border-border bg-surface text-sm text-muted transition-colors hover:text-fg sm:size-[34px]"
       >
         <span aria-hidden="true">⋮</span>
       </button>

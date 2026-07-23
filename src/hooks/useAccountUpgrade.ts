@@ -7,6 +7,19 @@ import { toast } from '@/stores/toasts'
 export const authUserKey = ['auth', 'user'] as const
 
 /**
+ * Supabase's own rate-limit message ("Email rate limit exceeded", "For
+ * security purposes, you can only request this after N seconds.") is
+ * accurate but easy to misread as the request having failed outright —
+ * reworded so it's clear the fix is "wait," not "try something else."
+ */
+function toFriendlyAuthMessage(error: { message: string; status?: number }): string {
+  if (error.status === 429 || /rate limit|after \d+ seconds/i.test(error.message)) {
+    return "You've requested too many links recently. Wait a minute or two, then try again."
+  }
+  return error.message
+}
+
+/**
  * Whether the current session belongs to an anonymous user (Supabase's
  * `is_anonymous` flag), so UI can offer "Save your data" only when there is
  * actually something to upgrade.
@@ -46,7 +59,7 @@ export function useUpgradeAccount() {
     },
 
     onError: (error) => {
-      toast.error(`Could not save your data. ${error.message}`)
+      toast.error(`Could not save your data. ${toFriendlyAuthMessage(error)}`)
     },
   })
 }
@@ -81,7 +94,7 @@ export function useSignIn() {
     },
 
     onError: (error) => {
-      toast.error(`Could not sign in. ${error.message}`)
+      toast.error(`Could not sign in. ${toFriendlyAuthMessage(error)}`)
     },
   })
 }
