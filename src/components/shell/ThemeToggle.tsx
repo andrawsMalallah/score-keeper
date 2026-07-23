@@ -61,7 +61,16 @@ export function ThemeToggle() {
       className="flex size-[30px] items-center justify-center rounded-full border border-border bg-surface text-sm text-muted transition-colors hover:text-fg sm:size-[34px]"
     >
       {/* Placeholder keeps the button the same size before hydration. */}
-      <span aria-hidden="true">{hasMounted ? (isDark ? '☾' : '☀') : '·'}</span>
+      <span
+        aria-hidden="true"
+        // The moon glyph's ink sits left-and-down within its own em-box in
+        // most fonts, unlike the sun glyph which is already centered — nudged
+        // to visually align both icons on the same crosshair, not just share
+        // the same flex-centered container.
+        className={hasMounted && isDark ? 'inline-block translate-x-[1px] -translate-y-px' : undefined}
+      >
+        {hasMounted ? (isDark ? '☾' : '☀') : '·'}
+      </span>
     </button>
   )
 }
