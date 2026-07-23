@@ -72,7 +72,7 @@ export function Toaster() {
       // interrupting whatever the screen reader is currently saying.
       aria-live="polite"
       aria-atomic="false"
-      className="pointer-events-none fixed inset-0 m-0 flex h-screen max-h-none w-screen flex-col items-end justify-end gap-2 border-0 bg-transparent p-4"
+      className="pointer-events-none fixed inset-0 m-0 flex h-dvh max-h-none w-screen flex-col items-end justify-end gap-2 border-0 bg-transparent p-4"
     >
       {toasts.map((toast) => (
         <div

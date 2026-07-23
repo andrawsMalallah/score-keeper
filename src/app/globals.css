@@ -78,6 +78,16 @@ body {
 }
 
 /*
+ * showModal() makes the page behind a dialog inert to focus/clicks, but
+ * browsers do NOT block touch-scroll/wheel input on it — the base page keeps
+ * scrolling underneath every open dialog unless told not to. All three
+ * dialogs share this one rule rather than each managing scroll lock itself.
+ */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+/*
  * Theme switch fades rather than snaps. Scoped to the tokens themselves
  * (not a blanket `transition: all`) so unrelated layout/animation isn't
  * slowed down.
