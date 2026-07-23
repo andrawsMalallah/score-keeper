@@ -1,8 +1,8 @@
 import type { LeaderboardRow, PairTally } from '@/lib/supabase/types'
 
 /** Smallest rollover the UI and the database check constraint both allow. */
-export const MIN_SUB_ROLLOVER = 2
-export const DEFAULT_SUB_ROLLOVER = 10
+export const MIN_POINTS_ROLLOVER = 2
+export const DEFAULT_POINTS_ROLLOVER = 10
 
 /**
  * A team pair with ids ordered to match the `low_team_id < high_team_id` check
@@ -27,25 +27,25 @@ export function tallySideFor(pair: NormalizedPair, teamId: string): TallySide {
 }
 
 export interface TallyScores {
-  main: number
-  sub: number
+  stars: number
+  points: number
 }
 
-/** Read one team's main/sub out of a tally row, hiding the low/high columns. */
+/** Read one team's stars/points out of a tally row, hiding the low/high columns. */
 export function readTally(tally: PairTally, teamId: string): TallyScores {
   return teamId === tally.low_team_id
-    ? { main: tally.low_main, sub: tally.low_sub }
-    : { main: tally.high_main, sub: tally.high_sub }
+    ? { stars: tally.low_stars, points: tally.low_points }
+    : { stars: tally.high_stars, points: tally.high_points }
 }
 
 export interface RolloverResult extends TallyScores {
-  /** True when this win pushed sub over the threshold and minted a main. */
+  /** True when this win pushed points over the threshold and minted a star. */
   rolledOver: boolean
 }
 
 /**
- * Apply a match win: +1 sub, and when sub reaches the rollover threshold it
- * resets to 0 and mints one main.
+ * Apply a match win: +1 point, and when points reaches the rollover threshold
+ * it resets to 0 and mints one star.
  *
  * The `rolledOver` flag drives the success toast and its haptic pattern, so it
  * has to come out of the same call that does the arithmetic — recomputing it at
@@ -55,17 +55,17 @@ export function applyMatchWin(
   current: TallyScores,
   rollover: number,
 ): RolloverResult {
-  const threshold = Math.max(MIN_SUB_ROLLOVER, rollover)
-  const sub = current.sub + 1
+  const threshold = Math.max(MIN_POINTS_ROLLOVER, rollover)
+  const points = current.points + 1
 
-  if (sub >= threshold) {
-    return { main: current.main + 1, sub: 0, rolledOver: true }
+  if (points >= threshold) {
+    return { stars: current.stars + 1, points: 0, rolledOver: true }
   }
-  return { main: current.main, sub, rolledOver: false }
+  return { stars: current.stars, points, rolledOver: false }
 }
 
 /**
- * Leaderboard ordering: main desc, then sub desc, then lifetime rounds won.
+ * Leaderboard ordering: stars desc, then points desc, then lifetime rounds won.
  *
  * Returns a new array; callers render straight from query results and must not
  * mutate the cache in place.
@@ -75,8 +75,8 @@ export function sortLeaderboard(
 ): LeaderboardRow[] {
   return [...rows].sort(
     (a, b) =>
-      b.main_wins - a.main_wins ||
-      b.sub_wins - a.sub_wins ||
+      b.star_wins - a.star_wins ||
+      b.point_wins - a.point_wins ||
       b.rounds_won - a.rounds_won,
   )
 }

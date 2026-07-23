@@ -33,17 +33,20 @@ export function Stepper({
   const inputId = `stepper-${label.toLowerCase().replace(/\s+/g, '-')}`
 
   return (
-    <div>
-      <label htmlFor={inputId} className="text-sm text-fg">
-        {label}
-      </label>
+    <div className="flex items-center justify-between gap-4">
+      <div>
+        <label htmlFor={inputId} className="text-sm text-fg">
+          {label}
+        </label>
+        {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
+      </div>
 
-      <div className="mt-2 flex items-center gap-2">
+      <div className="flex shrink-0 items-center gap-2">
         <Button
           onClick={() => onChange(clamp(value - step))}
           disabled={value <= min}
           aria-label={`Decrease ${label}`}
-          className="w-10"
+          className="w-10 border border-border bg-surface text-fg hover:border-muted"
         >
           −
         </Button>
@@ -68,13 +71,11 @@ export function Stepper({
           onClick={() => onChange(clamp(value + step))}
           disabled={max !== undefined && value >= max}
           aria-label={`Increase ${label}`}
-          className="w-10"
+          className="w-10 border border-border bg-surface text-fg hover:border-muted"
         >
           +
         </Button>
       </div>
-
-      {hint && <p className="mt-1.5 text-xs text-muted">{hint}</p>}
     </div>
   )
 }

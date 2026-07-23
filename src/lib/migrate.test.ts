@@ -114,10 +114,10 @@ describe('parseLegacyBackup', () => {
         game: 'cards',
         low_ref: 'cards:Alpha',
         high_ref: 'cards:Bravo',
-        low_main: 5,
-        low_sub: 1,
-        high_main: 2,
-        high_sub: 3,
+        low_stars: 5,
+        low_points: 1,
+        high_stars: 2,
+        high_points: 3,
       },
     ])
   })
@@ -201,8 +201,8 @@ describe('parseLegacyBackup', () => {
     })
 
     expect(payload.settings).toEqual({
-      cards_sub_rollover: 5,
-      domino_sub_rollover: 5,
+      cards_points_rollover: 5,
+      domino_points_rollover: 5,
       domino_target: 151,
     })
   })

@@ -2,7 +2,7 @@
 
 import type { GameType } from '@/lib/supabase/types'
 import type { GameConfig } from '@/lib/game/config'
-import { DEFAULT_SUB_ROLLOVER } from '@/lib/game/tallies'
+import { DEFAULT_POINTS_ROLLOVER } from '@/lib/game/tallies'
 import {
   SETTINGS_BOUNDS,
   useSettings,
@@ -32,18 +32,18 @@ export function GameSettings({
   // The settings row is created on first change, so fall back to the same
   // defaults the migration declares.
   const rolloverColumn =
-    game === 'cards' ? 'cards_sub_rollover' : 'domino_sub_rollover'
-  const rollover = settings?.[rolloverColumn] ?? DEFAULT_SUB_ROLLOVER
+    game === 'cards' ? 'cards_points_rollover' : 'domino_points_rollover'
+  const rollover = settings?.[rolloverColumn] ?? DEFAULT_POINTS_ROLLOVER
   const target = settings?.domino_target ?? 151
 
   return (
     <div className="space-y-5">
       <Stepper
-        label="Sub rollover"
+        label="Points rollover"
         value={rollover}
-        min={SETTINGS_BOUNDS.subRollover.min}
-        max={SETTINGS_BOUNDS.subRollover.max}
-        hint={`Every ${rollover} sub wins become 1 main win.`}
+        min={SETTINGS_BOUNDS.pointsRollover.min}
+        max={SETTINGS_BOUNDS.pointsRollover.max}
+        hint={`Every ${rollover} points become 1 star.`}
         onChange={(value) =>
           updateSettings.mutate({ [rolloverColumn]: value })
         }

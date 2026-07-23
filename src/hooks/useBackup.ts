@@ -57,10 +57,10 @@ export function useExportBackup() {
         game: tally.game,
         low_ref: tally.low_team_id,
         high_ref: tally.high_team_id,
-        low_main: tally.low_main,
-        low_sub: tally.low_sub,
-        high_main: tally.high_main,
-        high_sub: tally.high_sub,
+        low_stars: tally.low_stars,
+        low_points: tally.low_points,
+        high_stars: tally.high_stars,
+        high_points: tally.high_points,
       }))
 
       const matches: ImportMatch[] = ((matchesRes.data ?? []) as MatchWithRounds[]).map(
@@ -87,8 +87,8 @@ export function useExportBackup() {
 
       const settings = settingsRes.data
         ? {
-            cards_sub_rollover: settingsRes.data.cards_sub_rollover,
-            domino_sub_rollover: settingsRes.data.domino_sub_rollover,
+            cards_points_rollover: settingsRes.data.cards_points_rollover,
+            domino_points_rollover: settingsRes.data.domino_points_rollover,
             domino_target: settingsRes.data.domino_target,
           }
         : undefined

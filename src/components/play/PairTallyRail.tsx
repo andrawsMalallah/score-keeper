@@ -16,7 +16,7 @@ interface PairTallyRailProps {
 }
 
 /**
- * "Overall Score" rail (§2.6): Main/Sub for the active match's team pair.
+ * "Overall Score" rail (§2.6): Stars/Points for the active match's team pair.
  * Scoped to this pair only — Alpha-vs-Bravo and Alpha-vs-Charlie tallies never
  * mix, since pair_tallies keys on both team ids.
  */
@@ -35,10 +35,10 @@ export function PairTallyRail({
 
   const team1Scores = tally
     ? readTally(tally, team1Id)
-    : { main: 0, sub: 0 }
+    : { stars: 0, points: 0 }
   const team2Scores = tally
     ? readTally(tally, team2Id)
-    : { main: 0, sub: 0 }
+    : { stars: 0, points: 0 }
 
   return (
     <div className="rounded-xl border border-border bg-surface p-4">
@@ -67,7 +67,7 @@ export function PairTallyRail({
       <ConfirmDialog
         open={confirmReset}
         title="Reset counters?"
-        body={`Main and Sub for ${team1Name} vs ${team2Name} both go back to 0. This does not affect match history or the leaderboard's rounds-won count.`}
+        body={`Stars and Points for ${team1Name} vs ${team2Name} both go back to 0. This does not affect match history or the leaderboard's rounds-won count.`}
         confirmLabel="Reset"
         destructive
         onCancel={() => setConfirmReset(false)}
@@ -87,14 +87,14 @@ function TallyColumn({
 }: {
   name: string
   accentClass: string
-  scores: { main: number; sub: number }
+  scores: { stars: number; points: number }
 }) {
   return (
     <div className="px-3 text-center first:pl-0 last:pr-0">
       <p className={`truncate text-sm font-semibold ${accentClass}`}>{name}</p>
       <div className="mt-2 flex justify-center gap-4">
-        <Stat label="Main" value={scores.main} />
-        <Stat label="Sub" value={scores.sub} />
+        <Stat label="Stars" value={scores.stars} />
+        <Stat label="Points" value={scores.points} />
       </div>
     </div>
   )

@@ -15,9 +15,9 @@ export const pairTallyKey = (
 ) => ['pair-tally', game, team1Id, team2Id] as const
 
 /**
- * The Main/Sub tally for the active match's team pair (§2.6). Rows are keyed
- * by low/high team id, so a pair with no wins yet has no row at all — that is
- * a valid, zeroed state, not a loading error.
+ * The Stars/Points tally for the active match's team pair (§2.6). Rows are
+ * keyed by low/high team id, so a pair with no wins yet has no row at all —
+ * that is a valid, zeroed state, not a loading error.
  */
 export function usePairTally(
   game: GameType,
@@ -44,7 +44,7 @@ export function usePairTally(
   })
 }
 
-/** Zeroes both teams' Main and Sub for the current pair (§2.6 "Reset Counters"). */
+/** Zeroes both teams' Stars and Points for the current pair (§2.6 "Reset Counters"). */
 export function useResetPairTally(
   game: GameType,
   team1Id: string | undefined,
@@ -60,7 +60,7 @@ export function useResetPairTally(
       const supabase = createClient()
       const { error } = await supabase
         .from('pair_tallies')
-        .update({ low_main: 0, low_sub: 0, high_main: 0, high_sub: 0 })
+        .update({ low_stars: 0, low_points: 0, high_stars: 0, high_points: 0 })
         .eq('game', game)
         .eq('low_team_id', low_team_id)
         .eq('high_team_id', high_team_id)
@@ -74,7 +74,7 @@ export function useResetPairTally(
 
       queryClient.setQueryData<PairTally | null>(key, (current) =>
         current
-          ? { ...current, low_main: 0, low_sub: 0, high_main: 0, high_sub: 0 }
+          ? { ...current, low_stars: 0, low_points: 0, high_stars: 0, high_points: 0 }
           : current,
       )
 

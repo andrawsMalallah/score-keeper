@@ -30,8 +30,8 @@ create type match_status as enum ('active', 'finished');
 create table settings (
   user_id              uuid primary key references auth.users on delete cascade,
   theme                text not null default 'auto' check (theme in ('auto','light','dark')),
-  cards_sub_rollover   int  not null default 10 check (cards_sub_rollover  >= 2),
-  domino_sub_rollover  int  not null default 10 check (domino_sub_rollover >= 2),
+  cards_points_rollover   int  not null default 10 check (cards_points_rollover  >= 2),
+  domino_points_rollover  int  not null default 10 check (domino_points_rollover >= 2),
   domino_target        int  not null default 151 check (domino_target between 1 and 9999),
   updated_at           timestamptz not null default now()
 );
@@ -94,7 +94,7 @@ create table rounds (
 );
 create index rounds_by_match on rounds (match_id, position);
 
--- ── Pair tallies (Main/Sub per unordered team pair) ──────────────────────
+-- ── Pair tallies (Stars/Points per unordered team pair) ──────────────────
 -- Normalized so A-vs-B and B-vs-A share one row.
 create table pair_tallies (
   id           uuid primary key default gen_random_uuid(),
@@ -102,10 +102,10 @@ create table pair_tallies (
   game         game_type not null,
   low_team_id  uuid not null references teams on delete cascade,
   high_team_id uuid not null references teams on delete cascade,
-  low_main     int not null default 0 check (low_main  >= 0),
-  low_sub      int not null default 0 check (low_sub   >= 0),
-  high_main    int not null default 0 check (high_main >= 0),
-  high_sub     int not null default 0 check (high_sub  >= 0),
+  low_stars    int not null default 0 check (low_stars  >= 0),
+  low_points   int not null default 0 check (low_points >= 0),
+  high_stars   int not null default 0 check (high_stars >= 0),
+  high_points  int not null default 0 check (high_points >= 0),
   check (low_team_id < high_team_id),
   unique (user_id, game, low_team_id, high_team_id)
 );
@@ -136,10 +136,10 @@ select
   t.user_id,
   t.game,
   t.name,
-  coalesce(sum(case when pt.low_team_id  = t.id then pt.low_main  else 0 end)
-         + sum(case when pt.high_team_id = t.id then pt.high_main else 0 end), 0) as main_wins,
-  coalesce(sum(case when pt.low_team_id  = t.id then pt.low_sub   else 0 end)
-         + sum(case when pt.high_team_id = t.id then pt.high_sub  else 0 end), 0) as sub_wins,
+  coalesce(sum(case when pt.low_team_id  = t.id then pt.low_stars  else 0 end)
+         + sum(case when pt.high_team_id = t.id then pt.high_stars else 0 end), 0) as star_wins,
+  coalesce(sum(case when pt.low_team_id  = t.id then pt.low_points  else 0 end)
+         + sum(case when pt.high_team_id = t.id then pt.high_points else 0 end), 0) as point_wins,
   (select count(*)
      from rounds r
      join matches m on m.id = r.match_id
@@ -167,8 +167,8 @@ create trigger on_user_created
   for each row execute function seed_new_user();
 
 -- ── Declare a winner ─────────────────────────────────────────────────────
--- Archives the match and credits the winner's pair tally (+1 Sub, rolling
--- into +1 Main at the configured threshold) as a single atomic write, so a
+-- Archives the match and credits the winner's pair tally (+1 Points, rolling
+-- into +1 Stars at the configured threshold) as a single atomic write, so a
 -- partial failure can never archive a match without crediting the tally.
 create or replace function declare_winner(p_match_id uuid, p_winner_team_id uuid)
 returns matches
@@ -193,7 +193,7 @@ begin
   v_low  := least(v_match.team1_id, v_match.team2_id);
   v_high := greatest(v_match.team1_id, v_match.team2_id);
 
-  select case when v_match.game = 'cards' then cards_sub_rollover else domino_sub_rollover end
+  select case when v_match.game = 'cards' then cards_points_rollover else domino_points_rollover end
     into v_rollover
     from settings where user_id = auth.uid();
   v_rollover := coalesce(v_rollover, 10);
@@ -204,14 +204,14 @@ begin
 
   if p_winner_team_id = v_low then
     update pair_tallies set
-      low_sub  = case when low_sub + 1 >= v_rollover then 0 else low_sub + 1 end,
-      low_main = case when low_sub + 1 >= v_rollover then low_main + 1 else low_main end
+      low_points = case when low_points + 1 >= v_rollover then 0 else low_points + 1 end,
+      low_stars  = case when low_points + 1 >= v_rollover then low_stars + 1 else low_stars end
     where user_id = auth.uid() and game = v_match.game
       and low_team_id = v_low and high_team_id = v_high;
   else
     update pair_tallies set
-      high_sub  = case when high_sub + 1 >= v_rollover then 0 else high_sub + 1 end,
-      high_main = case when high_sub + 1 >= v_rollover then high_main + 1 else high_main end
+      high_points = case when high_points + 1 >= v_rollover then 0 else high_points + 1 end,
+      high_stars  = case when high_points + 1 >= v_rollover then high_stars + 1 else high_stars end
     where user_id = auth.uid() and game = v_match.game
       and low_team_id = v_low and high_team_id = v_high;
   end if;
@@ -235,10 +235,10 @@ $$;
 --
 -- Expected shape:
 -- {
---   "settings": { "cards_sub_rollover": 10, "domino_sub_rollover": 10, "domino_target": 151 },
+--   "settings": { "cards_points_rollover": 10, "domino_points_rollover": 10, "domino_target": 151 },
 --   "teams": [ { "ref": "cards:Alpha", "game": "cards", "name": "Alpha" }, ... ],
 --   "round_types": [ { "name": "Normal", "winner_pts": -25, "loser_pts": null, "is_default": true, "position": 0 }, ... ],
---   "pair_tallies": [ { "game": "cards", "low_ref": "cards:Alpha", "high_ref": "cards:Bravo", "low_main": 1, "low_sub": 2, "high_main": 0, "high_sub": 0 }, ... ],
+--   "pair_tallies": [ { "game": "cards", "low_ref": "cards:Alpha", "high_ref": "cards:Bravo", "low_stars": 1, "low_points": 2, "high_stars": 0, "high_points": 0 }, ... ],
 --   "matches": [
 --     {
 --       "game": "cards", "status": "finished", "team1_ref": "cards:Alpha", "team2_ref": "cards:Bravo",
@@ -314,22 +314,22 @@ begin
     continue when v_low_id is null or v_high_id is null;
 
     insert into pair_tallies (
-      user_id, game, low_team_id, high_team_id, low_main, low_sub, high_main, high_sub
+      user_id, game, low_team_id, high_team_id, low_stars, low_points, high_stars, high_points
     ) values (
       auth.uid(),
       (v_tally->>'game')::game_type,
       least(v_low_id, v_high_id),
       greatest(v_low_id, v_high_id),
-      case when v_low_id < v_high_id then (v_tally->>'low_main')::int  else (v_tally->>'high_main')::int end,
-      case when v_low_id < v_high_id then (v_tally->>'low_sub')::int   else (v_tally->>'high_sub')::int  end,
-      case when v_low_id < v_high_id then (v_tally->>'high_main')::int else (v_tally->>'low_main')::int  end,
-      case when v_low_id < v_high_id then (v_tally->>'high_sub')::int  else (v_tally->>'low_sub')::int   end
+      case when v_low_id < v_high_id then (v_tally->>'low_stars')::int  else (v_tally->>'high_stars')::int end,
+      case when v_low_id < v_high_id then (v_tally->>'low_points')::int   else (v_tally->>'high_points')::int  end,
+      case when v_low_id < v_high_id then (v_tally->>'high_stars')::int else (v_tally->>'low_stars')::int  end,
+      case when v_low_id < v_high_id then (v_tally->>'high_points')::int  else (v_tally->>'low_points')::int   end
     )
     on conflict (user_id, game, low_team_id, high_team_id) do update set
-      low_main  = excluded.low_main,
-      low_sub   = excluded.low_sub,
-      high_main = excluded.high_main,
-      high_sub  = excluded.high_sub;
+      low_stars   = excluded.low_stars,
+      low_points  = excluded.low_points,
+      high_stars  = excluded.high_stars,
+      high_points = excluded.high_points;
   end loop;
 
   -- ── Matches + rounds ─────────────────────────────────────────────────
@@ -377,10 +377,10 @@ begin
   -- ── Settings ─────────────────────────────────────────────────────────
   if p_payload ? 'settings' then
     update settings set
-      cards_sub_rollover  = coalesce((p_payload->'settings'->>'cards_sub_rollover')::int,  cards_sub_rollover),
-      domino_sub_rollover = coalesce((p_payload->'settings'->>'domino_sub_rollover')::int, domino_sub_rollover),
-      domino_target       = coalesce((p_payload->'settings'->>'domino_target')::int,       domino_target),
-      updated_at           = now()
+      cards_points_rollover  = coalesce((p_payload->'settings'->>'cards_points_rollover')::int,  cards_points_rollover),
+      domino_points_rollover = coalesce((p_payload->'settings'->>'domino_points_rollover')::int, domino_points_rollover),
+      domino_target           = coalesce((p_payload->'settings'->>'domino_target')::int,          domino_target),
+      updated_at              = now()
     where user_id = auth.uid();
   end if;
 end;

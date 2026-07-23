@@ -34,16 +34,16 @@ export interface Database {
         Row: {
           user_id: string
           theme: Theme
-          cards_sub_rollover: number
-          domino_sub_rollover: number
+          cards_points_rollover: number
+          domino_points_rollover: number
           domino_target: number
           updated_at: string
         }
         Insert: {
           user_id: string
           theme?: Theme
-          cards_sub_rollover?: number
-          domino_sub_rollover?: number
+          cards_points_rollover?: number
+          domino_points_rollover?: number
           domino_target?: number
           updated_at?: string
         }
@@ -195,10 +195,10 @@ export interface Database {
           /** Always the lesser of the two team ids, so A-vs-B and B-vs-A share a row. */
           low_team_id: string
           high_team_id: string
-          low_main: number
-          low_sub: number
-          high_main: number
-          high_sub: number
+          low_stars: number
+          low_points: number
+          high_stars: number
+          high_points: number
         }
         Insert: {
           id?: string
@@ -206,10 +206,10 @@ export interface Database {
           game: GameType
           low_team_id: string
           high_team_id: string
-          low_main?: number
-          low_sub?: number
-          high_main?: number
-          high_sub?: number
+          low_stars?: number
+          low_points?: number
+          high_stars?: number
+          high_points?: number
         }
         Update: Partial<Database['public']['Tables']['pair_tallies']['Insert']>
         Relationships: [
@@ -237,8 +237,8 @@ export interface Database {
           user_id: string
           game: GameType
           name: string
-          main_wins: number
-          sub_wins: number
+          star_wins: number
+          point_wins: number
           rounds_won: number
         }
         Relationships: []

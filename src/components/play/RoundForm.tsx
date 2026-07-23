@@ -17,6 +17,9 @@ interface RoundFormProps {
   team1Name: string
   team2Name: string
   canDeclare: boolean
+  /** Which team is currently ahead, so the button can take its color; null before
+   *  any rounds are scored or while the totals are tied. */
+  leader: Slot | null
   onDeclareWinner: () => void
 }
 
@@ -31,6 +34,7 @@ export function RoundForm({
   team1Name,
   team2Name,
   canDeclare,
+  leader,
   onDeclareWinner,
 }: RoundFormProps) {
   const addRound = useAddRound()
@@ -212,7 +216,10 @@ export function RoundForm({
           Add round
         </Button>
         <Button
-          variant="team2"
+          // Gray/neutral until a team is actually ahead (no rounds yet, or
+          // tied), then takes the leading team's color — a glance at the
+          // button should say who's winning without reading the score strip.
+          variant={leader ?? 'secondary'}
           disabled={!canDeclare}
           onClick={onDeclareWinner}
         >

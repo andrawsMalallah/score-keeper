@@ -55,15 +55,15 @@ export interface ImportPairTally {
   game: 'cards' | 'domino'
   low_ref: string
   high_ref: string
-  low_main: number
-  low_sub: number
-  high_main: number
-  high_sub: number
+  low_stars: number
+  low_points: number
+  high_stars: number
+  high_points: number
 }
 
 export interface ImportSettings {
-  cards_sub_rollover?: number
-  domino_sub_rollover?: number
+  cards_points_rollover?: number
+  domino_points_rollover?: number
   domino_target?: number
 }
 
@@ -180,8 +180,8 @@ export function parseLegacyBackup(data: Record<string, string>): ParseResult {
       addTeam(game, nameB)
       const refA = ref(game, nameA)
       const refB = ref(game, nameB)
-      const teamA = { main: counts.t1Main, sub: counts.t1Sub }
-      const teamB = { main: counts.t2Main, sub: counts.t2Sub }
+      const teamA = { stars: counts.t1Main, points: counts.t1Sub }
+      const teamB = { stars: counts.t2Main, points: counts.t2Sub }
       const [low_ref, high_ref, low, high] =
         refA < refB ? [refA, refB, teamA, teamB] : [refB, refA, teamB, teamA]
       return [
@@ -189,10 +189,10 @@ export function parseLegacyBackup(data: Record<string, string>): ParseResult {
           game,
           low_ref,
           high_ref,
-          low_main: low.main,
-          low_sub: low.sub,
-          high_main: high.main,
-          high_sub: high.sub,
+          low_stars: low.stars,
+          low_points: low.points,
+          high_stars: high.stars,
+          high_points: high.points,
         },
       ]
     })
@@ -321,8 +321,8 @@ export function parseLegacyBackup(data: Record<string, string>): ParseResult {
   const dominoTarget = parseInt(data['cardGame_dominoTarget'] ?? '151', 10)
 
   const settings: ImportSettings = {
-    cards_sub_rollover: Number.isFinite(cardsRollover) ? cardsRollover : 10,
-    domino_sub_rollover: Number.isFinite(dominoRollover) ? dominoRollover : 10,
+    cards_points_rollover: Number.isFinite(cardsRollover) ? cardsRollover : 10,
+    domino_points_rollover: Number.isFinite(dominoRollover) ? dominoRollover : 10,
     domino_target: Number.isFinite(dominoTarget) ? dominoTarget : 151,
   }
 

@@ -24,11 +24,11 @@
   --fg: oklch(94% 0.01 85); /* primary text */
   --muted: oklch(66% 0.02 260); /* secondary text */
   --accent: oklch(70% 0.11 200); /* brand/primary actions + success — teal */
-  --team1: oklch(68% 0.17 35); /* Team 1 — brick red */
+  --team1: oklch(66% 0.19 15); /* Team 1 — true red, not orange-leaning brick */
   --team2: oklch(66% 0.1 150); /* Team 2 — felt green */
-  --danger: oklch(58% 0.19 25); /* destructive actions — red */
+  --danger: oklch(58% 0.19 25); /* destructive actions — its own hue, distinct from team1 */
   --on-accent: oklch(14% 0.02 200); /* text on the teal accent */
-  --on-team1: oklch(15% 0.02 35); /* text on team1 */
+  --on-team1: oklch(15% 0.02 15); /* text on team1 */
   --on-team2: oklch(15% 0.02 150); /* text on team2 */
 }
 
@@ -39,11 +39,11 @@
   --fg: oklch(22% 0.02 260);
   --muted: oklch(46% 0.02 260);
   --accent: oklch(52% 0.1 200);
-  --team1: oklch(53% 0.17 35);
+  --team1: oklch(52% 0.19 15);
   --team2: oklch(42% 0.09 150);
   --danger: oklch(46% 0.19 25);
   --on-accent: oklch(98% 0.01 200);
-  --on-team1: oklch(98% 0.01 85);
+  --on-team1: oklch(98% 0.01 15);
   --on-team2: oklch(98% 0.01 150);
 }
 

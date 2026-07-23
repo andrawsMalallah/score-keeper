@@ -187,6 +187,7 @@ export function PlayScreen({ game }: { game: GameType }) {
             team1Name={team1Name}
             team2Name={team2Name}
             canDeclare={canDeclare}
+            leader={declareLeader}
             onDeclareWinner={handleDeclareWinnerRequest}
           />
 

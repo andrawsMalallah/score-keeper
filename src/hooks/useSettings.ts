@@ -16,7 +16,7 @@ export const settingsKey = ['settings'] as const
  * remains the real guard.
  */
 export const SETTINGS_BOUNDS = {
-  subRollover: { min: 2, max: 99 },
+  pointsRollover: { min: 2, max: 99 },
   dominoTarget: { min: 1, max: 9999 },
 } as const
 

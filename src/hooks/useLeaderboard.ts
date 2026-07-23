@@ -7,7 +7,7 @@ import { sortLeaderboard } from '@/lib/game/tallies'
 
 export const leaderboardKey = (game: GameType) => ['leaderboard', game] as const
 
-/** Per-team Main/Sub/Rounds totals for a game, sorted per §2.7. */
+/** Per-team Stars/Points/Rounds totals for a game, sorted per §2.7. */
 export function useLeaderboard(game: GameType) {
   return useQuery({
     queryKey: leaderboardKey(game),

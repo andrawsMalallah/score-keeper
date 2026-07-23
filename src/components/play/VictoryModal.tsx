@@ -23,11 +23,6 @@ interface VictoryModalProps {
   onEndGame: () => void
 }
 
-const TEAM_BORDER: Record<VictoryData['winnerTeam'], string> = {
-  team1: 'border-team1',
-  team2: 'border-team2',
-}
-
 /**
  * The victory moment (§2.9): trophy, winner name, three stat boxes, confetti.
  * `data` is captured by the caller at declare time so the modal keeps showing
@@ -50,7 +45,7 @@ export function VictoryModal({ data, onRematch, onEndGame }: VictoryModalProps) 
     <dialog
       ref={dialogRef}
       aria-labelledby="victory-modal-title"
-      className={`w-full max-w-sm rounded-xl border-2 ${TEAM_BORDER[data.winnerTeam]} bg-surface p-6 text-center text-fg motion-safe:open:animate-[victory-scale-in_240ms_ease-out] backdrop:bg-black/70`}
+      className="w-full max-w-sm rounded-xl border border-border bg-surface p-6 text-center text-fg motion-safe:open:animate-[victory-scale-in_240ms_ease-out] backdrop:bg-black/70"
     >
       <p className="text-4xl" aria-hidden="true">
         🏆

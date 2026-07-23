@@ -42,10 +42,10 @@ export function Leaderboard({ game }: { game: GameType }) {
               {row.name}
             </span>
             <span className="numerals text-sm text-muted">
-              <span className="font-bold text-fg">{row.main_wins}</span> main
+              <span className="font-bold text-fg">{row.star_wins}</span> stars
             </span>
             <span className="numerals text-sm text-muted">
-              <span className="font-bold text-fg">{row.sub_wins}</span> sub
+              <span className="font-bold text-fg">{row.point_wins}</span> pts
             </span>
             <span className="numerals text-sm text-muted">
               <span className="font-bold text-fg">{row.rounds_won}</span> rnds

@@ -13,10 +13,10 @@ type Variant = 'primary' | 'secondary' | 'team1' | 'team2' | 'danger' | 'ghost'
  */
 const VARIANTS: Record<Variant, string> = {
   primary: 'bg-accent text-on-accent hover:opacity-90 font-semibold',
-  secondary: 'border border-border bg-surface text-fg hover:border-muted',
+  secondary: 'bg-muted text-bg hover:opacity-90',
   team1: 'bg-team1 text-on-team1 hover:opacity-90 font-semibold',
   team2: 'bg-team2 text-on-team2 hover:opacity-90 font-semibold',
-  danger: 'border border-danger text-danger hover:bg-danger hover:text-on-accent',
+  danger: 'bg-danger text-on-accent hover:opacity-90',
   ghost: 'text-muted hover:text-fg',
 }
 

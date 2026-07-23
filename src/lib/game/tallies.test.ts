@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { LeaderboardRow, PairTally } from '@/lib/supabase/types'
 import {
   applyMatchWin,
-  DEFAULT_SUB_ROLLOVER,
+  DEFAULT_POINTS_ROLLOVER,
   normalizePair,
   rankBadge,
   readTally,
@@ -24,18 +24,18 @@ function tally(overrides: Partial<PairTally> = {}): PairTally {
     game: 'cards',
     low_team_id: ALPHA,
     high_team_id: BRAVO,
-    low_main: 0,
-    low_sub: 0,
-    high_main: 0,
-    high_sub: 0,
+    low_stars: 0,
+    low_points: 0,
+    high_stars: 0,
+    high_points: 0,
     ...overrides,
   }
 }
 
 function leaderboardRow(
   name: string,
-  main_wins: number,
-  sub_wins: number,
+  star_wins: number,
+  point_wins: number,
   rounds_won: number,
 ): LeaderboardRow {
   return {
@@ -43,8 +43,8 @@ function leaderboardRow(
     user_id: 'user-1',
     game: 'cards',
     name,
-    main_wins,
-    sub_wins,
+    star_wins,
+    point_wins,
     rounds_won,
   }
 }
@@ -70,59 +70,59 @@ describe('tallySideFor and readTally', () => {
   })
 
   it('reads each team out of the right columns', () => {
-    const row = tally({ low_main: 2, low_sub: 3, high_main: 1, high_sub: 7 })
-    expect(readTally(row, ALPHA)).toEqual({ main: 2, sub: 3 })
-    expect(readTally(row, BRAVO)).toEqual({ main: 1, sub: 7 })
+    const row = tally({ low_stars: 2, low_points: 3, high_stars: 1, high_points: 7 })
+    expect(readTally(row, ALPHA)).toEqual({ stars: 2, points: 3 })
+    expect(readTally(row, BRAVO)).toEqual({ stars: 1, points: 7 })
   })
 })
 
 describe('applyMatchWin', () => {
-  it('adds a sub without rolling over below the threshold', () => {
-    expect(applyMatchWin({ main: 0, sub: 0 }, DEFAULT_SUB_ROLLOVER)).toEqual({
-      main: 0,
-      sub: 1,
+  it('adds a point without rolling over below the threshold', () => {
+    expect(applyMatchWin({ stars: 0, points: 0 }, DEFAULT_POINTS_ROLLOVER)).toEqual({
+      stars: 0,
+      points: 1,
       rolledOver: false,
     })
   })
 
-  it('converts subs into a main once the threshold is reached', () => {
-    expect(applyMatchWin({ main: 1, sub: 9 }, 10)).toEqual({
-      main: 2,
-      sub: 0,
+  it('converts points into a star once the threshold is reached', () => {
+    expect(applyMatchWin({ stars: 1, points: 9 }, 10)).toEqual({
+      stars: 2,
+      points: 0,
       rolledOver: true,
     })
   })
 
   it('rolls over at the minimum threshold of 2', () => {
-    expect(applyMatchWin({ main: 0, sub: 1 }, 2)).toEqual({
-      main: 1,
-      sub: 0,
+    expect(applyMatchWin({ stars: 0, points: 1 }, 2)).toEqual({
+      stars: 1,
+      points: 0,
       rolledOver: true,
     })
   })
 
   it('treats a below-minimum rollover as 2 rather than minting every win', () => {
     // The database rejects rollover < 2; this keeps a bad client value from
-    // producing a main on every single match win.
-    expect(applyMatchWin({ main: 0, sub: 0 }, 1)).toEqual({
-      main: 0,
-      sub: 1,
+    // producing a star on every single match win.
+    expect(applyMatchWin({ stars: 0, points: 0 }, 1)).toEqual({
+      stars: 0,
+      points: 1,
       rolledOver: false,
     })
   })
 
-  it('recovers if stored sub already exceeds a lowered threshold', () => {
+  it('recovers if stored points already exceeds a lowered threshold', () => {
     // Lowering the rollover setting can strand a tally above the new threshold.
-    expect(applyMatchWin({ main: 0, sub: 8 }, 3)).toEqual({
-      main: 1,
-      sub: 0,
+    expect(applyMatchWin({ stars: 0, points: 8 }, 3)).toEqual({
+      stars: 1,
+      points: 0,
       rolledOver: true,
     })
   })
 })
 
 describe('sortLeaderboard', () => {
-  it('orders by main, then sub, then rounds won', () => {
+  it('orders by stars, then points, then rounds won', () => {
     const rows = [
       leaderboardRow('Charlie', 1, 5, 20),
       leaderboardRow('Alpha', 3, 0, 1),
