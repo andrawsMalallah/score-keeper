@@ -34,7 +34,7 @@ export function MoreMenu() {
   }, [open])
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative ml-1.5 sm:ml-2">
       <button
         type="button"
         onClick={() => {
