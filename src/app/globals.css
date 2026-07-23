@@ -101,6 +101,7 @@ body,
 dialog {
   margin-top: max(4rem, 8vh);
   margin-inline: auto;
+  max-width: calc(100vw - 2rem);
   transition: opacity 160ms ease, transform 160ms ease;
 }
 

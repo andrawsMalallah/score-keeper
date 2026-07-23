@@ -25,8 +25,8 @@ export function GameTabs({ activeGame }: { activeGame: GameType }) {
             aria-current={isActive ? 'page' : undefined}
             className={
               isActive
-                ? 'rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-on-accent'
-                : 'rounded-full px-4 py-1.5 text-sm text-muted transition-colors hover:text-fg'
+                ? 'rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-on-accent sm:px-4 sm:py-1.5 sm:text-sm'
+                : 'rounded-full px-2.5 py-1 text-xs text-muted transition-colors hover:text-fg sm:px-4 sm:py-1.5 sm:text-sm'
             }
           >
             {GAME_CONFIGS[game].label}

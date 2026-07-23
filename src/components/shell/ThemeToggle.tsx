@@ -58,7 +58,7 @@ export function ThemeToggle() {
       }}
       aria-label={label}
       title={label}
-      className="rounded-full border border-border bg-surface px-3 py-1.5 text-sm text-muted transition-colors hover:text-fg"
+      className="rounded-full border border-border bg-surface px-2 py-1 text-xs text-muted transition-colors hover:text-fg sm:px-3 sm:py-1.5 sm:text-sm"
     >
       {/* Placeholder keeps the button the same size before hydration. */}
       <span aria-hidden="true">{hasMounted ? (isDark ? '☾' : '☀') : '·'}</span>
