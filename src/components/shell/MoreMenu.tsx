@@ -2,18 +2,21 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { vibrate } from '@/lib/haptics'
-import { AccountUpgrade, AccountUpgradeTrigger } from './AccountUpgrade'
+import { useSignOut } from '@/hooks/useCodeAuth'
+import { Button } from '@/components/ui/Button'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { ImportExport } from './ImportExport'
 
 /**
  * Overflow menu for actions that don't need to live in the nav at a glance
- * (import/export, save-your-data). Keeps GameTabs + ThemeToggle as the only
+ * (import/export, sign out). Keeps GameTabs + ThemeToggle as the only
  * always-visible controls next to the brand.
  */
 export function MoreMenu() {
   const [open, setOpen] = useState(false)
-  const [upgradeOpen, setUpgradeOpen] = useState(false)
+  const [confirmSignOut, setConfirmSignOut] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const signOut = useSignOut()
 
   useEffect(() => {
     if (!open) return
@@ -56,21 +59,37 @@ export function MoreMenu() {
           className="absolute top-full right-0 z-20 mt-2 flex min-w-40 flex-col gap-1 rounded-xl border border-border bg-surface p-2 shadow-lg motion-safe:animate-[menu-pop-in_120ms_ease-out]"
         >
           <ImportExport onAction={() => setOpen(false)} />
-          <AccountUpgradeTrigger
-            onOpen={() => setUpgradeOpen(true)}
-            onAction={() => setOpen(false)}
-          />
+          <Button
+            variant="ghost"
+            className="w-full text-left"
+            role="menuitem"
+            onClick={() => {
+              setConfirmSignOut(true)
+              setOpen(false)
+            }}
+          >
+            Sign out
+          </Button>
         </div>
       )}
 
       {/*
        * Rendered outside the `open &&` block, at a fixed position, so closing
-       * the menu (onAction above) doesn't unmount this and its <dialog> in
-       * the same commit that upgradeOpen flips to true — the same class of
-       * bug documented for VictoryModal in PlayScreen. `open` is state owned
-       * here, not inside AccountUpgrade, so it survives the menu closing.
+       * the menu doesn't unmount this and its <dialog> in the same commit
+       * that confirmSignOut flips to true — the same class of bug documented
+       * for VictoryModal in PlayScreen.
        */}
-      <AccountUpgrade open={upgradeOpen} onClose={() => setUpgradeOpen(false)} />
+      <ConfirmDialog
+        open={confirmSignOut}
+        title="Sign out of this code?"
+        body="You'll need to re-enter it to get back in on this device."
+        confirmLabel="Sign out"
+        onCancel={() => setConfirmSignOut(false)}
+        onConfirm={() => {
+          setConfirmSignOut(false)
+          signOut.mutate()
+        }}
+      />
     </div>
   )
 }

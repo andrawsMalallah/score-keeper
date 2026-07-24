@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Bricolage_Grotesque, Familjen_Grotesk, Spline_Sans_Mono } from 'next/font/google'
 import './globals.css'
 import { ThemeScript } from '@/components/shell/ThemeScript'
+import { AuthGate } from '@/components/shell/AuthGate'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 import { Toaster } from '@/components/ui/Toaster'
 
@@ -31,6 +32,17 @@ const splineMono = Spline_Sans_Mono({
 export const metadata: Metadata = {
   title: 'Score Keeper',
   description: 'Keep score for cards and domino matches between two teams.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    // iOS ignores the manifest for "Add to Home Screen" and needs its own
+    // meta tags plus an opaque (non-transparent) touch icon.
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Score Keeper',
+  },
+  icons: {
+    apple: '/apple-touch-icon.png',
+  },
 }
 
 export const viewport: Viewport = {
@@ -62,7 +74,7 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-full flex-col">
         <QueryProvider>
-          {children}
+          <AuthGate>{children}</AuthGate>
           <Toaster />
         </QueryProvider>
       </body>

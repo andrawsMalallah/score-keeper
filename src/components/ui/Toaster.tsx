@@ -20,8 +20,8 @@ export function Toaster() {
   const dismiss = useToastStore((state) => state.dismiss)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Native <dialog showModal()> (ConfirmDialog, VictoryModal, AccountUpgrade)
-  // renders in the browser's top layer, which sits above any z-index however
+  // Native <dialog showModal()> (ConfirmDialog, VictoryModal) renders in the
+  // browser's top layer, which sits above any z-index however
   // high — the popover API puts this container in that same top layer so a
   // toast can render above an open dialog instead of behind its backdrop.
   // But top-layer stacking is insertion order: whichever entered most
@@ -39,8 +39,8 @@ export function Toaster() {
   }, [toasts])
 
   // A dialog opened *after* the popover was last shown still stacks above it
-  // (same insertion-order rule) — ConfirmDialog/VictoryModal/AccountUpgrade
-  // all call showModal() from their own effects with no shared call site to
+  // (same insertion-order rule) — ConfirmDialog/VictoryModal both call
+  // showModal() from their own effects with no shared call site to
   // hook, so watch for the DOM's `open` attribute instead of threading a
   // callback through every dialog. Attribute mutation fires synchronously
   // with showModal(), so this re-promotes before the next paint.

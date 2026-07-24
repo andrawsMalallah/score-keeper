@@ -101,8 +101,8 @@ body,
 }
 
 /*
- * All three modals (ConfirmDialog, VictoryModal, AccountUpgrade) are native
- * <dialog> elements with no shared wrapper, so positioning is set here once
+ * Both modals (ConfirmDialog, VictoryModal) are native <dialog> elements
+ * with no shared wrapper, so positioning is set here once
  * rather than tripled per component. Anchored near the top of the viewport
  * with breathing room above, instead of the browser's default vertical
  * centering, so the modal doesn't sit under the on-screen keyboard on mobile

@@ -1,11 +1,16 @@
 -- Score Keeper: full schema (init + import_backup RPC + realtime), combined.
 -- Paste into Supabase Dashboard -> SQL Editor -> New query -> Run.
 --
--- Rerunnable from scratch: drops every object this file creates first (data
--- included — teams/matches/rounds/etc. all cascade from the dropped tables),
--- then recreates everything below. Safe on both a fresh project and one
--- that already has this schema applied; auth.users itself is never touched,
--- so existing accounts/sessions survive, only their app data does not.
+-- Rerunnable from scratch: drops every object this file creates first, then
+-- recreates everything below. Safe on both a fresh project and one that
+-- already has this schema applied — but re-running is a FULL WIPE of the
+-- entire project, not just this app's tables: every Supabase auth table is
+-- cleared too (sessions, refresh tokens, MFA factors, identities, users),
+-- so every code account (every generated 6-character code and everything
+-- tied to it) is destroyed along with teams/matches/rounds/etc. This makes
+-- the project look like it did the day it was first created. There is no
+-- confirmation step and no way to recover anything afterward. Do not re-run
+-- this file against a project with accounts/data you want to keep.
 
 -- ── Teardown (drop in dependency order; `if exists` makes it safe on a fresh DB) ──
 drop trigger if exists on_user_created on auth.users;
@@ -21,6 +26,20 @@ drop table if exists teams;
 drop table if exists settings;
 drop type if exists match_status;
 drop type if exists game_type;
+
+-- Every Supabase auth table, in FK-safe order (children before parents),
+-- so the whole project's account state — not just this app's own tables —
+-- comes back exactly as empty as a brand-new project's would. Explicit
+-- rather than relying on auth.users' own cascade, since that cascade's
+-- exact coverage isn't something this file controls or can verify.
+delete from auth.mfa_amr_claims;
+delete from auth.mfa_challenges;
+delete from auth.mfa_factors;
+delete from auth.one_time_tokens;
+delete from auth.refresh_tokens;
+delete from auth.sessions;
+delete from auth.identities;
+delete from auth.users;
 
 -- ── Enums ────────────────────────────────────────────────────────────────
 create type game_type    as enum ('cards', 'domino');

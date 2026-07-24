@@ -47,7 +47,7 @@ export function useUpdateSettings() {
       } = await supabase.auth.getUser()
       if (!user) throw new Error('No session.')
 
-      // Upsert rather than update: a brand-new anonymous user has no settings
+      // Upsert rather than update: a brand-new code account has no settings
       // row until they change something.
       const { error } = await supabase
         .from('settings')

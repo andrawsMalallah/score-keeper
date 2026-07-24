@@ -32,18 +32,12 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // Contacts the auth server to validate the token. Do not replace with
-  // getSession(), which trusts unverified cookie data.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // First visit: start an anonymous session so scores can be kept without
-  // signing up, matching how the original localStorage app behaved. The
-  // account can be upgraded to email later without losing any data.
-  if (!user) {
-    await supabase.auth.signInAnonymously()
-  }
+  // Contacts the auth server to validate the token and rotate the session
+  // cookie for real code accounts. Do not replace with getSession(), which
+  // trusts unverified cookie data. An unauthenticated request simply passes
+  // through with no user — AuthGate renders the code entry screen for that
+  // case, and RLS returns empty results rather than erroring.
+  await supabase.auth.getUser()
 
   return supabaseResponse
 }
