@@ -2,7 +2,15 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { codeToEmail, generateCode, isValidCodeFormat, normalizeCode } from '@/lib/auth/code'
+import {
+  codeToEmail,
+  forgetRememberedCode,
+  generateCode,
+  getRememberedCode,
+  isValidCodeFormat,
+  normalizeCode,
+  rememberCode,
+} from '@/lib/auth/code'
 import { toast } from '@/stores/toasts'
 
 export const authUserKey = ['auth', 'user'] as const
@@ -56,8 +64,8 @@ export function useHasSession() {
  * already leaves the browser holding a valid session — doing so would flip
  * AuthGate into the app immediately and unmount CodeAuthScreen before the
  * generated code ever has a chance to be shown. CodeAuthScreen invalidates it
- * itself once the user taps "I've saved it," which is the point the app is
- * meant to actually become visible.
+ * itself once the user taps "Sign in" on the generated-code screen, which is
+ * the point the app is meant to actually become visible.
  */
 export function useGenerateCode() {
   return useMutation({
@@ -66,12 +74,17 @@ export function useGenerateCode() {
 
       for (let attempt = 0; attempt < MAX_GENERATE_ATTEMPTS; attempt++) {
         const code = generateCode()
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: codeToEmail(code),
           password: normalizeCode(code),
         })
 
-        if (!error) return code
+        if (!error) {
+          // Remembered locally so "View code" can show it again later on
+          // this same device — Supabase itself never stores it retrievably.
+          if (data.user) rememberCode(data.user.id, code)
+          return code
+        }
         if (!isDuplicateEmailError(error)) throw error
         // Duplicate: loop again with a freshly generated code.
       }
@@ -86,8 +99,29 @@ export function useGenerateCode() {
 }
 
 /**
- * Reveals the app after a freshly generated code has been acknowledged as
- * saved (see useGenerateCode's note on why that invalidation is deferred to
+ * The current account's code, if this is the device it was generated on —
+ * null both while loading and when this device never generated it (e.g. it
+ * joined via "Enter your code" instead, or a different device generated it).
+ * There is no server-side way to distinguish those two null cases, since
+ * Supabase never stores the plaintext code anywhere retrievable.
+ */
+export function useRememberedCode() {
+  return useQuery({
+    queryKey: [...authUserKey, 'remembered-code'],
+    queryFn: async (): Promise<string | null> => {
+      const supabase = createClient()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!user) return null
+      return getRememberedCode(user.id)
+    },
+  })
+}
+
+/**
+ * Reveals the app after a freshly generated code's "Sign in" button is
+ * tapped (see useGenerateCode's note on why that invalidation is deferred to
  * here rather than firing immediately on signUp).
  */
 export function useConfirmSessionSaved() {
@@ -110,12 +144,16 @@ export function useSignInWithCode() {
       }
 
       const supabase = createClient()
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: codeToEmail(code),
         password: normalizeCode(code),
       })
 
       if (error) throw new Error('Code not found or incorrect.')
+      // Remembered locally too, not just on generate, so "View code" works
+      // from any device that has ever signed in — not only the one that
+      // originally generated it.
+      if (data.user) rememberCode(data.user.id, code)
     },
 
     onSuccess: () => {
@@ -137,6 +175,9 @@ export function useSignOut() {
       const supabase = createClient()
       const { error } = await supabase.auth.signOut()
       if (error) throw error
+      // So a different group signing into this device afterward never sees
+      // the previous group's remembered code.
+      forgetRememberedCode()
     },
 
     onSuccess: () => {

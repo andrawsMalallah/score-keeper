@@ -93,19 +93,12 @@ export function CodeAuthScreen() {
               {copied ? 'Copied' : 'Copy code'}
             </Button>
 
-            <p className="text-sm text-danger">
-              Write this down — it&rsquo;s the only way back into this
-              account. There is no email recovery; if this code is lost, the
-              data behind it cannot be reached again.
+            <p className="text-sm text-muted">
+              This code is your account — use it to sign in from any device.
             </p>
 
-            <Button
-              variant="primary"
-              className="w-full"
-              disabled={!copied}
-              onClick={confirmSaved}
-            >
-              I&rsquo;ve saved it
+            <Button variant="primary" className="w-full" onClick={confirmSaved}>
+              Sign in
             </Button>
           </div>
         )}

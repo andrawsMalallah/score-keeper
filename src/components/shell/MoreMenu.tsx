@@ -6,14 +6,16 @@ import { useSignOut } from '@/hooks/useCodeAuth'
 import { Button } from '@/components/ui/Button'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { ImportExport } from './ImportExport'
+import { ViewCodeDialog } from './ViewCodeDialog'
 
 /**
  * Overflow menu for actions that don't need to live in the nav at a glance
- * (import/export, sign out). Keeps GameTabs + ThemeToggle as the only
- * always-visible controls next to the brand.
+ * (import/export, view code, sign out). Keeps GameTabs + ThemeToggle as the
+ * only always-visible controls next to the brand.
  */
 export function MoreMenu() {
   const [open, setOpen] = useState(false)
+  const [viewCodeOpen, setViewCodeOpen] = useState(false)
   const [confirmSignOut, setConfirmSignOut] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const signOut = useSignOut()
@@ -64,6 +66,17 @@ export function MoreMenu() {
             className="w-full text-left"
             role="menuitem"
             onClick={() => {
+              setViewCodeOpen(true)
+              setOpen(false)
+            }}
+          >
+            View code
+          </Button>
+          <Button
+            variant="ghost"
+            className="w-full text-left"
+            role="menuitem"
+            onClick={() => {
               setConfirmSignOut(true)
               setOpen(false)
             }}
@@ -75,15 +88,18 @@ export function MoreMenu() {
 
       {/*
        * Rendered outside the `open &&` block, at a fixed position, so closing
-       * the menu doesn't unmount this and its <dialog> in the same commit
-       * that confirmSignOut flips to true — the same class of bug documented
-       * for VictoryModal in PlayScreen.
+       * the menu doesn't unmount these and their <dialog>s in the same commit
+       * that viewCodeOpen/confirmSignOut flip to true — the same class of bug
+       * documented for VictoryModal in PlayScreen.
        */}
+      <ViewCodeDialog open={viewCodeOpen} onClose={() => setViewCodeOpen(false)} />
+
       <ConfirmDialog
         open={confirmSignOut}
         title="Sign out of this code?"
         body="You'll need to re-enter it to get back in on this device."
         confirmLabel="Sign out"
+        destructive
         onCancel={() => setConfirmSignOut(false)}
         onConfirm={() => {
           setConfirmSignOut(false)

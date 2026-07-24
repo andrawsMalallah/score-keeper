@@ -47,3 +47,38 @@ export function isValidCodeFormat(input: string): boolean {
   if (normalized.length !== CODE_LENGTH) return false
   return [...normalized].every((char) => CODE_CHARSET.includes(char))
 }
+
+const REMEMBERED_CODE_STORAGE_KEY = 'score-keeper-remembered-code'
+
+/**
+ * The code is never retrievable from Supabase after generation — it is only
+ * ever used as a password, then hashed server-side — so "view my code again"
+ * can only work by having the generating device remember it locally. Scoped
+ * by user id (not just "the last code this browser ever saw") so a device
+ * that later signs into a different account doesn't show the wrong code.
+ */
+export function rememberCode(userId: string, code: string): void {
+  localStorage.setItem(
+    REMEMBERED_CODE_STORAGE_KEY,
+    JSON.stringify({ userId, code: normalizeCode(code) }),
+  )
+}
+
+/** Returns the remembered code only if it belongs to the given user id. */
+export function getRememberedCode(userId: string): string | null {
+  const raw = localStorage.getItem(REMEMBERED_CODE_STORAGE_KEY)
+  if (!raw) return null
+
+  try {
+    const parsed = JSON.parse(raw) as { userId: string; code: string }
+    return parsed.userId === userId ? parsed.code : null
+  } catch {
+    return null
+  }
+}
+
+/** Called on sign-out so a different group signing into this device afterward
+ *  never sees a previous group's remembered code. */
+export function forgetRememberedCode(): void {
+  localStorage.removeItem(REMEMBERED_CODE_STORAGE_KEY)
+}
