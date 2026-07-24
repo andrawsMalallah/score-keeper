@@ -92,18 +92,30 @@ function TallyColumn({
   return (
     <div className="px-3 text-center first:pl-0 last:pr-0">
       <p className={`truncate text-sm font-semibold ${accentClass}`}>{name}</p>
-      <div className="mt-2 flex justify-center gap-4">
-        <Stat label="Stars" value={scores.stars} />
-        <Stat label="Points" value={scores.points} />
+      <div className="mt-2 flex items-baseline justify-center gap-4">
+        <Stat label="Stars" value={scores.stars} size="lg" />
+        <Stat label="Points" value={scores.points} size="sm" />
       </div>
     </div>
   )
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({
+  label,
+  value,
+  size,
+}: {
+  label: string
+  value: number
+  size: 'lg' | 'sm'
+}) {
   return (
     <div>
-      <p className="numerals text-xl leading-none font-bold text-fg">{value}</p>
+      <p
+        className={`numerals leading-none font-bold text-fg ${size === 'lg' ? 'text-3xl' : 'text-xl'}`}
+      >
+        {value}
+      </p>
       <p className="mt-1 text-[10px] tracking-wide text-muted uppercase">
         {label}
       </p>

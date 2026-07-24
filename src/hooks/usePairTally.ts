@@ -14,6 +14,30 @@ export const pairTallyKey = (
   team2Id: string | undefined,
 ) => ['pair-tally', game, team1Id, team2Id] as const
 
+export const allPairTalliesKey = (game: GameType) =>
+  ['pair-tallies', game] as const
+
+/**
+ * Every pair_tallies row for a game, so standings between two teams can be
+ * checked from the setup screen without starting a match (§2.6 only ever
+ * showed this scoped to the active match's pair via usePairTally).
+ */
+export function useAllPairTallies(game: GameType) {
+  return useQuery({
+    queryKey: allPairTalliesKey(game),
+    queryFn: async (): Promise<PairTally[]> => {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from('pair_tallies')
+        .select('*')
+        .eq('game', game)
+
+      if (error) throw error
+      return data
+    },
+  })
+}
+
 /**
  * The Stars/Points tally for the active match's team pair (§2.6). Rows are
  * keyed by low/high team id, so a pair with no wins yet has no row at all —
@@ -88,6 +112,7 @@ export function useResetPairTally(
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leaderboard', game] })
+      queryClient.invalidateQueries({ queryKey: allPairTalliesKey(game) })
     },
   })
 }

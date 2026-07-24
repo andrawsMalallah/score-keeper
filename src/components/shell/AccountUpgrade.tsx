@@ -178,7 +178,7 @@ export function AccountUpgrade({
         <dialog
           ref={dialogRef}
           aria-labelledby="account-upgrade-title"
-          className="max-w-sm rounded-xl border border-border bg-surface p-5 text-fg backdrop:bg-black/60 open:animate-none"
+          className="w-full max-w-xl rounded-xl border border-border bg-surface p-5 text-fg backdrop:bg-black/75 open:animate-none"
         >
           <h2
             id="account-upgrade-title"

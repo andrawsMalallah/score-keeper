@@ -107,6 +107,7 @@ export function useDeclareWinner(game: GameType) {
       queryClient.setQueryData(activeMatchKey(game), null)
       queryClient.invalidateQueries({ queryKey: ['leaderboard'] })
       queryClient.invalidateQueries({ queryKey: ['pair-tally'] })
+      queryClient.invalidateQueries({ queryKey: ['pair-tallies', game] })
       queryClient.invalidateQueries({ queryKey: ['history', game] })
     },
 

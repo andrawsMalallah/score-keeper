@@ -8,6 +8,7 @@ import { RoundTypeManager } from '@/components/setup/RoundTypeManager'
 import { StartMatch } from '@/components/setup/StartMatch'
 import { MatchHistory } from '@/components/setup/MatchHistory'
 import { Leaderboard } from '@/components/setup/Leaderboard'
+import { PairTallies } from '@/components/setup/PairTallies'
 import { SetupSection } from '@/components/setup/SetupSection'
 
 /**
@@ -64,6 +65,10 @@ export default async function GameSetupPage({
 
       <SetupSection title="Leaderboard">
         <Leaderboard game={game} />
+      </SetupSection>
+
+      <SetupSection title="Team Pairs">
+        <PairTallies game={game} />
       </SetupSection>
     </div>
   )

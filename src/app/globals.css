@@ -111,7 +111,10 @@ body,
 dialog {
   margin-top: max(4rem, 8vh);
   margin-inline: auto;
-  max-width: calc(100vw - 2rem);
+  /* Deliberately narrower than the navbar/body's max-w-3xl (48rem) so modals
+     read as a focused overlay rather than spanning the full content column,
+     while still shrinking to the viewport on narrow screens. */
+  max-width: min(36rem, calc(100vw - 2rem));
   transition: opacity 160ms ease, transform 160ms ease;
 }
 

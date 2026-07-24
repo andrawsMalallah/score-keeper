@@ -45,7 +45,7 @@ export function VictoryModal({ data, onRematch, onEndGame }: VictoryModalProps) 
     <dialog
       ref={dialogRef}
       aria-labelledby="victory-modal-title"
-      className="w-full max-w-sm rounded-xl border border-border bg-surface p-6 text-center text-fg motion-safe:open:animate-[victory-scale-in_240ms_ease-out] backdrop:bg-black/70"
+      className="w-full max-w-xl rounded-xl border border-border bg-surface p-6 text-center text-fg motion-safe:open:animate-[victory-scale-in_240ms_ease-out] backdrop:bg-black/85"
     >
       <p className="text-4xl" aria-hidden="true">
         🏆
